@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import com.example.emaveganfood.ui.SplashScreen
 
 enum class CupcakeScreen() {
-    Start,
+    Splash,
     Login,
     Account,
     Foods,
