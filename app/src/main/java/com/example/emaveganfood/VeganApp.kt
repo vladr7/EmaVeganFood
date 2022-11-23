@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,6 +20,7 @@ import com.example.emaveganfood.ui.screens.account.AccountScreen
 import com.example.emaveganfood.ui.screens.login.LoginScreen
 import com.example.emaveganfood.ui.screens.login.LoginViewModel
 import com.example.emaveganfood.ui.screens.splash.SplashScreen
+import com.example.emaveganfood.ui.screens.splash.SplashViewModel
 
 enum class VeganScreen(@StringRes val title: Int) {
     Splash(title = R.string.splash_screen_name),
@@ -55,12 +57,13 @@ fun VeganAppBar(
 @Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
+    splashViewModel: SplashViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = VeganScreen.valueOf(
-        backStackEntry?.destination?.route ?: VeganScreen.Splash.name
+        backStackEntry?.destination?.route ?: VeganScreen.Login.name
     )
 
     Scaffold(
@@ -71,18 +74,22 @@ fun VeganApp(
                 navigateUp = { navController.navigateUp() })
         }
     ) { innerPadding ->
+        val splashUiState by splashViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
-            startDestination = VeganScreen.Login.name,
+            startDestination = VeganScreen.Splash.name,
             modifier = modifier.padding(innerPadding)
         ) {
-//            composable(route = VeganScreen.Splash.name) {
-//                SplashScreen()
-//            }
+            composable(route = VeganScreen.Splash.name) {
+                SplashScreen(
+                    isUserLoggedIn = splashUiState.isUserLoggedIn,
+                    onNavigateToNextScreen = { nextScreen -> navController.navigate(nextScreen) }
+                )
+            }
             composable(route = VeganScreen.Login.name) {
                 LoginScreen(
-                    onLoginButtonClicked = {  navController.navigate(VeganScreen.Account.name) }
+                    onLoginButtonClicked = { navController.navigate(VeganScreen.Account.name) }
                 )
             }
             composable(route = VeganScreen.Account.name) {
