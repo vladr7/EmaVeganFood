@@ -1,4 +1,4 @@
-package com.example.emaveganfood.ui
+package com.example.emaveganfood.ui.screens.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,9 @@ import androidx.compose.ui.unit.dp
 import com.example.emaveganfood.R
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginButtonClicked: () -> Unit = {},
+    ) {
 
     Column {
         Text(text = stringResource(id = R.string.welcome_message))
@@ -20,7 +22,7 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(300.dp))
 
         Button(
-            onClick = { },
+            onClick = onLoginButtonClicked,
         ) {
             Text(stringResource(id = R.string.login_button))
         }

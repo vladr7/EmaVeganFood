@@ -1,4 +1,4 @@
-package com.example.emaveganfood.ui
+package com.example.emaveganfood.ui.screens.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,8 @@ fun SplashScreen(
     Column(
         modifier = Modifier.background(Color.Green)
     ) {
-
+        if(false) {
+            // navigate to login screen
+        }
     }
 }
