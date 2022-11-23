@@ -3,6 +3,9 @@
     <string name="welcome_message">Buna!</string>
     <string name="login_button">Login</string>
     <string name="account_title">Contul tau</string>
+    <string name="favorites_title">Favorite</string>
+    <string name="foods_title">Mancare</string>
+    <string name="generate_title">Generare</string>
     <string name="top_app_bar">Ema Vegan</string>
     <string name="back_button">Inapoi</string>
     <string name="splash_screen_name">Splash Screen</string>

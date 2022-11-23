@@ -17,6 +17,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.emaveganfood.ui.screens.account.AccountScreen
+import com.example.emaveganfood.ui.screens.favorites.FavoritesScreen
+import com.example.emaveganfood.ui.screens.foods.FoodsScreen
+import com.example.emaveganfood.ui.screens.generate.GenerateScreen
 import com.example.emaveganfood.ui.screens.login.LoginScreen
 import com.example.emaveganfood.ui.screens.login.LoginViewModel
 import com.example.emaveganfood.ui.screens.splash.SplashScreen
@@ -94,6 +97,15 @@ fun VeganApp(
             }
             composable(route = VeganScreen.Account.name) {
                 AccountScreen()
+            }
+            composable(route = VeganScreen.Favorites.name) {
+                FavoritesScreen()
+            }
+            composable(route = VeganScreen.Foods.name) {
+                FoodsScreen()
+            }
+            composable(route = VeganScreen.Generate.name) {
+                GenerateScreen()
             }
         }
     }
