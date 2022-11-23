@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,25 +38,13 @@ enum class VeganScreen(@StringRes val title: Int) {
 }
 
 @Composable
-fun VeganAppBar(
+fun VeganTopAppBar(
     currentScreen: VeganScreen,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
         modifier = Modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
-                }
-            }
-        }
     )
 }
 
@@ -64,17 +55,50 @@ fun VeganApp(
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+
+    val items = listOf(
+        VeganScreen.Account,
+        VeganScreen.Foods,
+        VeganScreen.Favorites,
+        VeganScreen.Generate,
+    )
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = VeganScreen.valueOf(
-        backStackEntry?.destination?.route ?: VeganScreen.Login.name
+        backStackEntry?.destination?.route ?: VeganScreen.Splash.name
     )
 
     Scaffold(
         topBar = {
-            VeganAppBar(
+            VeganTopAppBar(
                 currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() })
+            )
+        },
+        bottomBar = {
+            BottomNavigation {
+                val currentDestination = backStackEntry?.destination
+                items.forEach { screen ->
+                    BottomNavigationItem(
+                        icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
+                        label = { Text(stringResource(screen.title)) },
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.name } == true,
+                        onClick = {
+                            navController.navigate(screen.name) {
+                                // Pop up to the start destination of the graph to
+                                // avoid building up a large stack of destinations
+                                // on the back stack as users select items
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                // Avoid multiple copies of the same destination when
+                                // reselecting the same item
+                                launchSingleTop = true
+                                // Restore state when reselecting a previously selected item
+                                restoreState = true
+                            }
+                        }
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         val splashUiState by splashViewModel.uiState.collectAsState()
