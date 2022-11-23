@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.emaveganfood.VeganScreen
+import com.example.emaveganfood.navigation.NavigationItem
 
 @Composable
 fun SplashScreen(
@@ -17,9 +17,9 @@ fun SplashScreen(
         modifier = Modifier.background(Color.Green)
     ) {
         if(isUserLoggedIn) {
-            onNavigateToNextScreen(VeganScreen.Account.name)
+            onNavigateToNextScreen(NavigationItem.Account.route)
         } else {
-            onNavigateToNextScreen(VeganScreen.Login.name)
+            onNavigateToNextScreen(NavigationItem.Login.route)
         }
     }
 }
