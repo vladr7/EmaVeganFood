@@ -29,17 +29,6 @@ import com.example.emaveganfood.ui.screens.splash.SplashScreen
 import com.example.emaveganfood.ui.screens.splash.SplashViewModel
 
 @Composable
-fun VeganTopAppBar(
-    currentScreen: NavigationItem,
-    modifier: Modifier = Modifier
-) {
-    TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
-        modifier = Modifier,
-    )
-}
-
-@Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
     splashViewModel: SplashViewModel = viewModel(),
@@ -49,33 +38,34 @@ fun VeganApp(
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
-//    val currentScreen = NavigationItem.valueOf(
-//        backStackEntry?.destination?.route ?: NavigationItem.Splash.name
-//    )
+    val currentScreen = backStackEntry?.destination?.route ?: NavigationItem.Splash.route
 
     when (backStackEntry?.destination?.route) {
-        "login" -> {
+        NavigationItem.Splash.route -> {
             bottomBarState.value = false
         }
-        "splash" -> {
+        NavigationItem.Login.route -> {
             bottomBarState.value = false
         }
-        "account" -> {
+        NavigationItem.Account.route -> {
             bottomBarState.value = true
         }
-        "foods" -> {
+        NavigationItem.Foods.route -> {
             bottomBarState.value = true
         }
-        "favorites" -> {
+        NavigationItem.Favorites.route -> {
             bottomBarState.value = true
         }
-        "generate" -> {
+        NavigationItem.Generate.route -> {
             bottomBarState.value = true
         }
 
     }
 
     Scaffold(
+        topBar = {
+            TopBar(currentScreen = currentScreen)
+        },
         bottomBar = {
             BottomBar(
                 navController = navController,
@@ -115,7 +105,17 @@ fun VeganApp(
             }
         }
     }
+}
 
+@Composable
+fun TopBar(
+    currentScreen: String,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        title = { Text(currentScreen) },
+        modifier = Modifier,
+    )
 }
 
 @Composable
