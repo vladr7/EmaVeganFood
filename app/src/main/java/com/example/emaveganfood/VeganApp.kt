@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.emaveganfood.data.DataSource
 import com.example.emaveganfood.navigation.NavigationItem
 import com.example.emaveganfood.ui.screens.account.AccountScreen
 import com.example.emaveganfood.ui.screens.favorites.FavoritesScreen
@@ -98,7 +99,7 @@ fun VeganApp(
                 FavoritesScreen()
             }
             composable(route = NavigationItem.Foods.route) {
-                FoodsScreen()
+                FoodsScreen(DataSource.loadFoods())
             }
             composable(route = NavigationItem.Generate.route) {
                 GenerateScreen()
