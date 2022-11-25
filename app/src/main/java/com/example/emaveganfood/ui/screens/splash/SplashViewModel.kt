@@ -15,7 +15,7 @@ class SplashViewModel : ViewModel() {
     init {
         _uiState.update { currentState ->
             currentState.copy(
-                isUserLoggedIn = false
+                isUserLoggedIn = true
             )
         }
     }

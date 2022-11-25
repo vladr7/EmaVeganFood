@@ -11,6 +11,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,8 +28,6 @@ fun FoodsScreen(
 ) {
 
     Column {
-        Text(text = stringResource(id = R.string.foods_title))
-        
         LazyColumn {
             items(allFoods) { food ->
                 FoodCard(food = food)
@@ -43,19 +42,21 @@ fun FoodCard(
     modifier: Modifier = Modifier
 ) {
     Card(modifier = Modifier.padding(8.dp), elevation = 4.dp) {
-        Column {
-//            Image(
-//                painter = painterResource(affirmation.imageResourceId),
-//                contentDescription = stringResource(affirmation.stringResourceId),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(194.dp),
-//                contentScale = ContentScale.Crop
-//            )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(food.imageResourceId),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(194.dp),
+                contentScale = ContentScale.Crop
+            )
             Text(
                 text = food.name,
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.h2
+                modifier = Modifier.padding(8.dp),
+                style = MaterialTheme.typography.h3,
             )
             Text(
                 text = food.description,
