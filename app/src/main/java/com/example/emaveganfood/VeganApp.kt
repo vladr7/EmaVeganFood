@@ -32,10 +32,11 @@ import com.example.emaveganfood.ui.screens.splash.SplashViewModel
 @Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
+    onLoginButtonClicked: () -> Unit = {},
     splashViewModel: SplashViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
-) {
+    navController: NavHostController = rememberNavController(),
+    ) {
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -89,7 +90,7 @@ fun VeganApp(
             }
             composable(route = NavigationItem.Login.route) {
                 LoginScreen(
-                    onLoginButtonClicked = { navController.navigate(NavigationItem.Account.route) }
+                    onLoginButtonClicked = onLoginButtonClicked
                 )
             }
             composable(route = NavigationItem.Account.route) {
