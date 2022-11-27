@@ -122,9 +122,9 @@ fun TopBar(
 @Composable
 fun BottomBar(navController: NavController, bottomBarState: MutableState<Boolean>) {
     val items = listOf(
-        NavigationItem.Account,
+//        NavigationItem.Account,
         NavigationItem.Foods,
-        NavigationItem.Favorites,
+//        NavigationItem.Favorites,
         NavigationItem.Generate
     )
 
