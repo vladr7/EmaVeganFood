@@ -28,11 +28,13 @@ import com.example.emaveganfood.ui.screens.login.LoginScreen
 import com.example.emaveganfood.ui.screens.login.LoginViewModel
 import com.example.emaveganfood.ui.screens.splash.SplashScreen
 import com.example.emaveganfood.ui.screens.splash.SplashViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
     onLoginButtonClicked: () -> Unit = {},
+    onLogoutButtonClicked: () -> Unit = {},
     splashViewModel: SplashViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
@@ -94,7 +96,12 @@ fun VeganApp(
                 )
             }
             composable(route = NavigationItem.Account.route) {
-                AccountScreen()
+                AccountScreen(
+                    onLogoutButtonClicked = {
+                        FirebaseAuth.getInstance().signOut()
+                        navController.navigate(NavigationItem.Login.route)
+                    }
+                )
             }
             composable(route = NavigationItem.Favorites.route) {
                 FavoritesScreen()
@@ -123,7 +130,7 @@ fun TopBar(
 @Composable
 fun BottomBar(navController: NavController, bottomBarState: MutableState<Boolean>) {
     val items = listOf(
-//        NavigationItem.Account,
+        NavigationItem.Account,
         NavigationItem.Foods,
 //        NavigationItem.Favorites,
         NavigationItem.Generate

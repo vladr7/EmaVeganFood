@@ -2,6 +2,7 @@ package com.example.emaveganfood.ui.screens.splash
 
 import androidx.lifecycle.ViewModel
 import com.example.emaveganfood.data.SplashUiState
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,10 +13,12 @@ class SplashViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SplashUiState())
     val uiState: StateFlow<SplashUiState> = _uiState.asStateFlow()
 
+    private val firebaseAuth = FirebaseAuth.getInstance()
+
     init {
         _uiState.update { currentState ->
             currentState.copy(
-                isUserLoggedIn = false
+                isUserLoggedIn = firebaseAuth.currentUser != null
             )
         }
     }
