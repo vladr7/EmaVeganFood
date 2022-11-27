@@ -14,4 +14,6 @@
     <string name="foods_screen_name">Foods</string>
     <string name="favorites_screen_name">Favorites</string>
     <string name="generate_screen_name">Generate</string>
+    <string name="expand_button_content_description">See more or less information about a food.</string>
+    <string name="about">About</string>
 </resources>

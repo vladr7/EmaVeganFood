@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "175335263664",
+    "project_id": "emaveganapp",
+    "storage_bucket": "emaveganapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175335263664:android:77036bd81832980a0fda75",
+        "android_client_info": {
+          "package_name": "com.example.emaveganfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175335263664-36hgc2s0n7jc7ejiojn05hrfakst5n5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFQ9u6e7MS1y9msLOLQHPcAL0OWq6gp7M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175335263664-36hgc2s0n7jc7ejiojn05hrfakst5n5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
