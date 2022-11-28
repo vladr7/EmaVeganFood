@@ -1,5 +1,6 @@
 package com.example.emaveganfood
 
+import android.window.SplashScreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -19,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.emaveganfood.data.DataSource
+import com.example.emaveganfood.data.MainUiState
 import com.example.emaveganfood.navigation.NavigationItem
 import com.example.emaveganfood.ui.screens.account.AccountScreen
 import com.example.emaveganfood.ui.screens.favorites.FavoritesScreen
@@ -26,8 +28,7 @@ import com.example.emaveganfood.ui.screens.foods.FoodsScreen
 import com.example.emaveganfood.ui.screens.generate.GenerateScreen
 import com.example.emaveganfood.ui.screens.login.LoginScreen
 import com.example.emaveganfood.ui.screens.login.LoginViewModel
-import com.example.emaveganfood.ui.screens.splash.SplashScreen
-import com.example.emaveganfood.ui.screens.splash.SplashViewModel
+import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -35,19 +36,16 @@ fun VeganApp(
     modifier: Modifier = Modifier,
     onLoginButtonClicked: () -> Unit = {},
     onLogoutButtonClicked: () -> Unit = {},
-    splashViewModel: SplashViewModel = viewModel(),
+    mainViewModel: MainViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
-    ) {
+) {
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: NavigationItem.Splash.route
+    val currentScreen = backStackEntry?.destination?.route ?: NavigationItem.Account.route
 
     when (backStackEntry?.destination?.route) {
-        NavigationItem.Splash.route -> {
-            bottomBarState.value = false
-        }
         NavigationItem.Login.route -> {
             bottomBarState.value = false
         }
@@ -77,19 +75,14 @@ fun VeganApp(
             )
         }
     ) { innerPadding ->
-        val splashUiState by splashViewModel.uiState.collectAsState()
+        val mainUiState by mainViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
-            startDestination = NavigationItem.Splash.route,
+            startDestination = getStartDestination(mainUiState),
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(route = NavigationItem.Splash.route) {
-                SplashScreen(
-                    isUserLoggedIn = splashUiState.isUserLoggedIn,
-                    onNavigateToNextScreen = { nextScreen -> navController.navigate(nextScreen) }
-                )
-            }
+
             composable(route = NavigationItem.Login.route) {
                 LoginScreen(
                     onLoginButtonClicked = onLoginButtonClicked
@@ -115,6 +108,10 @@ fun VeganApp(
         }
     }
 }
+
+fun getStartDestination(mainUiState: MainUiState): String =
+    if (mainUiState.isLoggedIn) NavigationItem.Account.route else NavigationItem.Login.route
+
 
 @Composable
 fun TopBar(

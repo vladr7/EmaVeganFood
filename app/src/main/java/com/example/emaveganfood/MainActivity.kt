@@ -21,6 +21,7 @@ import com.example.emaveganfood.data.DataSource
 import com.example.emaveganfood.navigation.NavigationItem
 import com.example.emaveganfood.ui.screens.foods.FoodsScreen
 import com.example.emaveganfood.ui.theme.EmaVeganFoodTheme
+import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var mainViewModel: MainViewModel
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainViewModel = MainViewModel()
         setupGoogleSignIn()
 
         setContent {
@@ -98,12 +101,6 @@ class MainActivity : ComponentActivity() {
                 if (task.isSuccessful) {
                     println("SignIn success! ${task.result.user}")
                     // navigate to main
-                    setContent {
-                        EmaVeganFoodTheme {
-                            FoodsScreen(allFoods = DataSource.loadFoods())
-                        }
-                    }
-
                 } else {
                     println("SignIn failed: ${task.exception?.localizedMessage}")
                 }
