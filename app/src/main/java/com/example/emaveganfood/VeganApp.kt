@@ -85,7 +85,10 @@ fun VeganApp(
 
             composable(route = NavigationItem.Login.route) {
                 LoginScreen(
-                    onLoginButtonClicked = onLoginButtonClicked
+                    onLoginButtonClicked = onLoginButtonClicked,
+                    onSuccesLogin = {
+                        navController.navigate(NavigationItem.Account.route)
+                    }
                 )
             }
             composable(route = NavigationItem.Account.route) {
