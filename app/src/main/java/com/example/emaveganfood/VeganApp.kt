@@ -1,8 +1,11 @@
 package com.example.emaveganfood
 
+import android.window.SplashScreen
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.emaveganfood.data.DataSource
+import com.example.emaveganfood.data.MainUiState
 import com.example.emaveganfood.navigation.NavigationItem
 import com.example.emaveganfood.ui.screens.account.AccountScreen
 import com.example.emaveganfood.ui.screens.favorites.FavoritesScreen
@@ -26,25 +30,29 @@ import com.example.emaveganfood.ui.screens.foods.FoodsScreen
 import com.example.emaveganfood.ui.screens.generate.GenerateScreen
 import com.example.emaveganfood.ui.screens.login.LoginScreen
 import com.example.emaveganfood.ui.screens.login.LoginViewModel
-import com.example.emaveganfood.ui.screens.splash.SplashScreen
-import com.example.emaveganfood.ui.screens.splash.SplashViewModel
+import com.example.emaveganfood.ui.viewmodels.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(
+    ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class, ExperimentalCoroutinesApi::class
+)
 @Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
-    splashViewModel: SplashViewModel = viewModel(),
+    onLoginButtonClicked: () -> Unit = {},
+    onLogoutButtonClicked: () -> Unit = {},
+    mainViewModel: MainViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: NavigationItem.Splash.route
+    val currentScreen = backStackEntry?.destination?.route ?: NavigationItem.Account.route
 
     when (backStackEntry?.destination?.route) {
-        NavigationItem.Splash.route -> {
-            bottomBarState.value = false
-        }
         NavigationItem.Login.route -> {
             bottomBarState.value = false
         }
@@ -74,26 +82,32 @@ fun VeganApp(
             )
         }
     ) { innerPadding ->
-        val splashUiState by splashViewModel.uiState.collectAsState()
+        val mainUiState by mainViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
-            startDestination = NavigationItem.Splash.route,
+            startDestination = getStartDestination(mainUiState),
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(route = NavigationItem.Splash.route) {
-                SplashScreen(
-                    isUserLoggedIn = splashUiState.isUserLoggedIn,
-                    onNavigateToNextScreen = { nextScreen -> navController.navigate(nextScreen) }
-                )
-            }
+
             composable(route = NavigationItem.Login.route) {
                 LoginScreen(
-                    onLoginButtonClicked = { navController.navigate(NavigationItem.Account.route) }
+                    onSuccesLogin = {
+                        navController.navigate(NavigationItem.Foods.route) {
+                            popUpTo(NavigationItem.Login.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 )
             }
             composable(route = NavigationItem.Account.route) {
-                AccountScreen()
+                AccountScreen(
+                    onLogoutButtonClicked = {
+                        FirebaseAuth.getInstance().signOut()
+                        navController.navigate(NavigationItem.Login.route)
+                    }
+                )
             }
             composable(route = NavigationItem.Favorites.route) {
                 FavoritesScreen()
@@ -107,6 +121,10 @@ fun VeganApp(
         }
     }
 }
+
+fun getStartDestination(mainUiState: MainUiState): String =
+    if (mainUiState.isLoggedIn) NavigationItem.Foods.route else NavigationItem.Login.route
+
 
 @Composable
 fun TopBar(
@@ -122,7 +140,7 @@ fun TopBar(
 @Composable
 fun BottomBar(navController: NavController, bottomBarState: MutableState<Boolean>) {
     val items = listOf(
-//        NavigationItem.Account,
+        NavigationItem.Account,
         NavigationItem.Foods,
 //        NavigationItem.Favorites,
         NavigationItem.Generate

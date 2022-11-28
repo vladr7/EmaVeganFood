@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "175335263664-o8hrngml8pnq632sh6rnt93ju3uktjqs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.emaveganfood",
+            "certificate_hash": "0ec658b5c7ea5371960e3bf30f5929f579e46096"
+          }
+        },
+        {
           "client_id": "175335263664-36hgc2s0n7jc7ejiojn05hrfakst5n5n.apps.googleusercontent.com",
           "client_type": 3
         }
