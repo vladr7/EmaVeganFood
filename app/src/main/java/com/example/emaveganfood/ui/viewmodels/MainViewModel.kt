@@ -13,7 +13,6 @@ class MainViewModel: ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState(
         isLoggedIn = firebaseAuth.currentUser != null,
-        signInSuccess = false
     ))
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 

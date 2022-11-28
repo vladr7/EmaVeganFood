@@ -34,7 +34,8 @@ import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
+@OptIn(
+    ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
     ExperimentalMaterialApi::class, ExperimentalCoroutinesApi::class
 )
 @Composable
@@ -92,7 +93,11 @@ fun VeganApp(
             composable(route = NavigationItem.Login.route) {
                 LoginScreen(
                     onSuccesLogin = {
-                        navController.navigate(NavigationItem.Account.route)
+                        navController.navigate(NavigationItem.Foods.route) {
+                            popUpTo(NavigationItem.Login.route) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
@@ -118,7 +123,7 @@ fun VeganApp(
 }
 
 fun getStartDestination(mainUiState: MainUiState): String =
-    if (mainUiState.isLoggedIn) NavigationItem.Account.route else NavigationItem.Login.route
+    if (mainUiState.isLoggedIn) NavigationItem.Foods.route else NavigationItem.Login.route
 
 
 @Composable
