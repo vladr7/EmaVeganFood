@@ -1,24 +1,32 @@
 package com.example.emaveganfood.ui.screens.login
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.Button
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.emaveganfood.R
+import com.example.emaveganfood.ui.common.SignInButton
 import com.example.emaveganfood.utils.AuthResultContract
 import com.google.android.gms.common.api.ApiException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
+@ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
 @Composable
 fun LoginScreen(
-    onLoginButtonClicked: () -> Unit = {},
     loginViewModel: LoginViewModel = viewModel(),
     onSuccesLogin: () -> Unit = {},
 ) {
@@ -50,23 +58,51 @@ fun LoginScreen(
             }
         }
 
+    LoginView(
+        errorText = text,
+        onClick = {
+            text = null
+            authResultLauncher.launch(signInRequestCode)
+        }
+    )
+
     if(shouldNavigate == true && !navigated) {
         navigated = true
         onSuccesLogin()
     }
+}
 
-    Column {
-        Text(text = stringResource(id = R.string.welcome_message))
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@ExperimentalMaterialApi
+@Composable
+fun LoginView(
+    errorText: String?,
+    onClick: () -> Unit
+) {
+    var isLoading by remember { mutableStateOf(false) }
 
-        Spacer(modifier = Modifier.height(300.dp))
-
-        Button(
-            onClick = {
-                authResultLauncher.launch(signInRequestCode)
-            },
+    Scaffold {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(id = R.string.login_button))
+            SignInButton(
+                text = "Sign in with Google",
+                loadingText = "Signing in...",
+                isLoading = isLoading,
+                icon = painterResource(id = R.drawable.ic_google_logo),
+                onClick = {
+                    isLoading = true
+                    onClick()
+                }
+            )
+
+            errorText?.let {
+                isLoading = false
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(text = it)
+            }
         }
     }
-
 }

@@ -2,8 +2,10 @@ package com.example.emaveganfood
 
 import android.window.SplashScreen
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -30,7 +32,11 @@ import com.example.emaveganfood.ui.screens.login.LoginScreen
 import com.example.emaveganfood.ui.screens.login.LoginViewModel
 import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class, ExperimentalCoroutinesApi::class
+)
 @Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
@@ -85,7 +91,6 @@ fun VeganApp(
 
             composable(route = NavigationItem.Login.route) {
                 LoginScreen(
-                    onLoginButtonClicked = onLoginButtonClicked,
                     onSuccesLogin = {
                         navController.navigate(NavigationItem.Account.route)
                     }
