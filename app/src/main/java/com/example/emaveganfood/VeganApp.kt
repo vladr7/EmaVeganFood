@@ -10,6 +10,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,7 +30,7 @@ import com.example.emaveganfood.ui.screens.FavoritesScreen
 import com.example.emaveganfood.ui.screens.FoodsScreen
 import com.example.emaveganfood.ui.screens.GenerateScreen
 import com.example.emaveganfood.ui.screens.LoginScreen
-import com.example.emaveganfood.ui.viewmodels.LoginViewModel
+import com.example.emaveganfood.ui.theme.Primary
 import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -128,8 +130,14 @@ fun TopBar(
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(currentScreen) },
+        title = {
+            Text(
+                currentScreen,
+                color = Color.White
+            )
+        },
         modifier = Modifier,
+        backgroundColor = Primary
     )
 }
 
@@ -147,7 +155,9 @@ fun BottomBar(navController: NavController, bottomBarState: MutableState<Boolean
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),
         content = {
-            BottomNavigation {
+            BottomNavigation(
+                backgroundColor = colorResource(id = R.color.primary),
+            ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
