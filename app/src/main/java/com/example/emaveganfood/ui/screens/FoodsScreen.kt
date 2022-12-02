@@ -1,9 +1,11 @@
 package com.example.emaveganfood.ui.screens
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
+import android.annotation.SuppressLint
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,12 +13,15 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,32 +31,80 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.emaveganfood.R
 import com.example.emaveganfood.ui.models.Food
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun FoodsScreen(
+    modifier: Modifier = Modifier,
     allFoods: List<Food>,
-    modifier: Modifier = Modifier
+    onAddFoodClicked: () -> Unit,
 ) {
+    val listState = rememberLazyListState()
+    val fabVisibility by derivedStateOf {
+        listState.firstVisibleItemIndex == 0
+    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Scaffold(
+        floatingActionButton = {
+            AddFoodFab(
+                isVisibleBecauseOfScrolling = fabVisibility,
+                onAddFoodClicked = onAddFoodClicked
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) {
-        LazyColumn {
+        LazyColumn(
+            state = listState
+        ) {
             items(allFoods) { food ->
                 FoodItem(food = food)
             }
         }
+
     }
 }
+
+@Composable
+fun AddFoodFab(
+    modifier: Modifier = Modifier,
+    isVisibleBecauseOfScrolling: Boolean,
+    onAddFoodClicked: () -> Unit
+) {
+    val density = LocalDensity.current
+    AnimatedVisibility(
+        modifier = modifier,
+        visible = isVisibleBecauseOfScrolling,
+        enter = slideInVertically {
+            with(density) { 40.dp.roundToPx() }
+        } + fadeIn(),
+        exit = fadeOut(
+            animationSpec = keyframes {
+                this.durationMillis = 120
+            }
+        )
+    ) {
+        ExtendedFloatingActionButton(
+            modifier = Modifier
+                .padding(16.dp),
+            text = {
+                Text(text = "Add Food")
+            },
+            onClick = onAddFoodClicked,
+            icon = {
+                Icon(Icons.Filled.Add, null)
+            }
+        )
+    }
+}
+
 
 @Composable
 fun FoodItem(

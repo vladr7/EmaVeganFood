@@ -2,6 +2,7 @@ package com.example.emaveganfood.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -36,5 +37,6 @@ fun AccountScreen(
         Button(onClick = onLogoutButtonClicked) {
             Text(text = "Logout")
         }
+
     }
 }

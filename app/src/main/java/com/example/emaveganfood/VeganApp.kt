@@ -48,7 +48,7 @@ fun VeganApp(
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = when(backStackEntry?.destination?.route) {
+    val currentScreen = when (backStackEntry?.destination?.route) {
         NavigationItem.Login.route -> {
             bottomBarState.value = false
             NavigationItem.Login
@@ -118,7 +118,11 @@ fun VeganApp(
                 FavoritesScreen()
             }
             composable(route = NavigationItem.Foods.route) {
-                FoodsScreen(DataSource.loadFoods())
+                FoodsScreen(
+                    allFoods = DataSource.loadFoods(),
+                    onAddFoodClicked = {
+
+                    })
             }
             composable(route = NavigationItem.Generate.route) {
                 GenerateScreen()
