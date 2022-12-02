@@ -1,4 +1,4 @@
-package com.example.emaveganfood.ui.screens.generate
+package com.example.emaveganfood.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
@@ -7,9 +7,9 @@ import androidx.compose.ui.res.stringResource
 import com.example.emaveganfood.R
 
 @Composable
-fun GenerateScreen() {
+fun FavoritesScreen() {
 
     Column {
-        Text(text = stringResource(id = R.string.generate_title))
+        Text(text = stringResource(id = R.string.favorites_title))
     }
 }

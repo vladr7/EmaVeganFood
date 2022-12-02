@@ -1,4 +1,4 @@
-package com.example.emaveganfood.ui.screens.foods
+package com.example.emaveganfood.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 

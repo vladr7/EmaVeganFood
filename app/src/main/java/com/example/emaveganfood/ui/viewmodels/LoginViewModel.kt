@@ -1,4 +1,4 @@
-package com.example.emaveganfood.ui.screens.login
+package com.example.emaveganfood.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.emaveganfood.ui.models.User

@@ -1,6 +1,5 @@
-package com.example.emaveganfood.ui.screens.foods
+package com.example.emaveganfood.ui.screens
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring

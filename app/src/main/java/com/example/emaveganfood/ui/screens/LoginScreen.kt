@@ -1,4 +1,4 @@
-package com.example.emaveganfood.ui.screens.login
+package com.example.emaveganfood.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.emaveganfood.R
 import com.example.emaveganfood.ui.common.SignInButton
+import com.example.emaveganfood.ui.viewmodels.LoginViewModel
 import com.example.emaveganfood.utils.AuthResultContract
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,6 +1,5 @@
 package com.example.emaveganfood
 
-import android.window.SplashScreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
@@ -25,11 +24,11 @@ import com.example.emaveganfood.data.DataSource
 import com.example.emaveganfood.data.MainUiState
 import com.example.emaveganfood.navigation.NavigationItem
 import com.example.emaveganfood.ui.screens.account.AccountScreen
-import com.example.emaveganfood.ui.screens.favorites.FavoritesScreen
-import com.example.emaveganfood.ui.screens.foods.FoodsScreen
-import com.example.emaveganfood.ui.screens.generate.GenerateScreen
-import com.example.emaveganfood.ui.screens.login.LoginScreen
-import com.example.emaveganfood.ui.screens.login.LoginViewModel
+import com.example.emaveganfood.ui.screens.FavoritesScreen
+import com.example.emaveganfood.ui.screens.FoodsScreen
+import com.example.emaveganfood.ui.screens.GenerateScreen
+import com.example.emaveganfood.ui.screens.LoginScreen
+import com.example.emaveganfood.ui.viewmodels.LoginViewModel
 import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,10 +40,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable
 fun VeganApp(
     modifier: Modifier = Modifier,
-    onLoginButtonClicked: () -> Unit = {},
-    onLogoutButtonClicked: () -> Unit = {},
     mainViewModel: MainViewModel = viewModel(),
-    loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
@@ -143,7 +139,7 @@ fun BottomBar(navController: NavController, bottomBarState: MutableState<Boolean
         NavigationItem.Account,
         NavigationItem.Foods,
 //        NavigationItem.Favorites,
-        NavigationItem.Generate
+//        NavigationItem.Generate
     )
 
     AnimatedVisibility(
