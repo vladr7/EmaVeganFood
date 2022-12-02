@@ -96,7 +96,7 @@ fun LoginView(
                 onClick = {
                     isLoading = true
                     onClick()
-                }
+                },
             )
 
             errorText?.let {

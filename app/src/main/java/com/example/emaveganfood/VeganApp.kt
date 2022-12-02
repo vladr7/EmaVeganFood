@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.emaveganfood.data.DataSource
 import com.example.emaveganfood.data.MainUiState
 import com.example.emaveganfood.navigation.NavigationItem
-import com.example.emaveganfood.ui.screens.account.AccountScreen
+import com.example.emaveganfood.ui.screens.AccountScreen
 import com.example.emaveganfood.ui.screens.FavoritesScreen
 import com.example.emaveganfood.ui.screens.FoodsScreen
 import com.example.emaveganfood.ui.screens.GenerateScreen
@@ -110,7 +110,8 @@ fun VeganApp(
                     onLogoutButtonClicked = {
                         FirebaseAuth.getInstance().signOut()
                         navController.navigate(NavigationItem.Login.route)
-                    }
+                    },
+                    username = FirebaseAuth.getInstance().currentUser?.displayName ?: ""
                 )
             }
             composable(route = NavigationItem.Favorites.route) {

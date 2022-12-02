@@ -11,6 +11,7 @@ import androidx.compose.material.ContentAlpha.medium
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
@@ -37,7 +38,8 @@ fun SignInButton(
         modifier = Modifier.clickable(
             enabled = !isLoading,
             onClick = onClick
-        ),
+        )
+            .shadow(elevation = 16.dp),
         shape = shape,
         border = BorderStroke(width = 1.dp, color = borderColor),
         color = backgroundColor
