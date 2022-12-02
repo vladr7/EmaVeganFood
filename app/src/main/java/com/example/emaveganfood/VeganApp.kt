@@ -48,25 +48,31 @@ fun VeganApp(
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: NavigationItem.Account.route
-
-    when (backStackEntry?.destination?.route) {
+    val currentScreen = when(backStackEntry?.destination?.route) {
         NavigationItem.Login.route -> {
             bottomBarState.value = false
+            NavigationItem.Login
         }
         NavigationItem.Account.route -> {
             bottomBarState.value = true
+            NavigationItem.Account
         }
         NavigationItem.Foods.route -> {
             bottomBarState.value = true
+            NavigationItem.Foods
         }
         NavigationItem.Favorites.route -> {
             bottomBarState.value = true
+            NavigationItem.Favorites
         }
         NavigationItem.Generate.route -> {
             bottomBarState.value = true
+            NavigationItem.Generate
         }
-
+        else -> {
+            bottomBarState.value = true
+            NavigationItem.Account
+        }
     }
 
     Scaffold(
@@ -126,13 +132,13 @@ fun getStartDestination(mainUiState: MainUiState): String =
 
 @Composable
 fun TopBar(
-    currentScreen: String,
+    currentScreen: NavigationItem,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = {
             Text(
-                currentScreen,
+                stringResource(id = currentScreen.title),
                 color = Color.White
             )
         },
