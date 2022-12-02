@@ -6,12 +6,12 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -19,8 +19,14 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,7 +39,12 @@ fun FoodsScreen(
     modifier: Modifier = Modifier
 ) {
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         LazyColumn {
             items(allFoods) { food ->
                 FoodItem(food = food)
@@ -51,17 +62,26 @@ fun FoodItem(
         mutableStateOf(false)
     }
     val color by animateColorAsState(
-        targetValue = if (expanded) Color.DarkGray else MaterialTheme.colors.surface,
+        targetValue = if (expanded) colorResource(id = R.color.light_purple) else MaterialTheme.colors.surface,
     )
 
-    Card(modifier = Modifier.padding(8.dp), elevation = 4.dp) {
+    val itemPadding = if (expanded) 8.dp else 16.dp
+
+    Card(
+        modifier = Modifier
+            .padding(itemPadding)
+            .clickable {
+                expanded = !expanded
+            },
+        elevation = 8.dp, shape = RoundedCornerShape(8.dp)
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
+                        stiffness = Spring.StiffnessMediumLow
                     )
                 )
                 .background(color)
@@ -71,38 +91,20 @@ fun FoodItem(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(194.dp),
-                contentScale = ContentScale.Crop
+                    .fillMaxHeight()
+                    .padding(10.dp)
+                    .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop,
             )
             Text(
                 text = food.name,
-                modifier = Modifier.padding(8.dp),
-                style = MaterialTheme.typography.h3,
+                Modifier.padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
+                style = MaterialTheme.typography.h5,
             )
-            FoodItemButton(
-                expanded = expanded,
-                onClick = { expanded = !expanded }
-            )
-            if(expanded) {
+            if (expanded) {
                 FoodDescription(description = food.description)
             }
         }
-    }
-}
-
-@Composable
-fun FoodItemButton(
-    expanded: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = if(expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-            tint = MaterialTheme.colors.secondary,
-            contentDescription = stringResource(id = R.string.expand_button_content_description)
-        )
     }
 }
 
@@ -120,8 +122,8 @@ fun FoodDescription(
         )
     ) {
         Text(
-            text = stringResource(R.string.about),
-            style = MaterialTheme.typography.h3,
+            text = stringResource(R.string.descriere),
+            style = MaterialTheme.typography.h6,
         )
         Text(
             text = description,
