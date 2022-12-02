@@ -1,5 +1,7 @@
 package com.example.emaveganfood
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
@@ -25,11 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.emaveganfood.data.DataSource
 import com.example.emaveganfood.data.MainUiState
 import com.example.emaveganfood.navigation.NavigationItem
-import com.example.emaveganfood.ui.screens.AccountScreen
-import com.example.emaveganfood.ui.screens.FavoritesScreen
-import com.example.emaveganfood.ui.screens.FoodsScreen
-import com.example.emaveganfood.ui.screens.GenerateScreen
-import com.example.emaveganfood.ui.screens.LoginScreen
+import com.example.emaveganfood.ui.screens.*
 import com.example.emaveganfood.ui.theme.Primary
 import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -46,7 +44,6 @@ fun VeganApp(
     navController: NavHostController = rememberNavController(),
 ) {
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
-
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = when (backStackEntry?.destination?.route) {
         NavigationItem.Login.route -> {
@@ -68,6 +65,10 @@ fun VeganApp(
         NavigationItem.Generate.route -> {
             bottomBarState.value = true
             NavigationItem.Generate
+        }
+        NavigationItem.AddFood.route -> {
+            bottomBarState.value = true
+            NavigationItem.AddFood
         }
         else -> {
             bottomBarState.value = true
@@ -121,11 +122,14 @@ fun VeganApp(
                 FoodsScreen(
                     allFoods = DataSource.loadFoods(),
                     onAddFoodClicked = {
-
+                        navController.navigate(NavigationItem.AddFood.route)
                     })
             }
             composable(route = NavigationItem.Generate.route) {
                 GenerateScreen()
+            }
+            composable(route = NavigationItem.AddFood.route) {
+                AddFoodScreen()
             }
         }
     }
