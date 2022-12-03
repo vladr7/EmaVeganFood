@@ -1,9 +1,13 @@
 package com.example.emaveganfood.ui.models
 
-import androidx.annotation.DrawableRes
+import com.google.firebase.firestore.DocumentId
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Food(
-    val name: String = "",
-    val description: String = "",
-    @DrawableRes val imageResourceId: Int
-)
+    @DocumentId
+    @SerialName("id") val id: String = "",
+    @SerialName("title") val title: String = "",
+    @SerialName("description") val description: String = "",
+): java.io.Serializable

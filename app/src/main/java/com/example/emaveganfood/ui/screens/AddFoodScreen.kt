@@ -20,25 +20,38 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.emaveganfood.ComposeFileProvider
 import com.example.emaveganfood.R
+import com.example.emaveganfood.navigation.NavigationItem
+import com.example.emaveganfood.ui.models.Food
 import com.example.emaveganfood.ui.theme.Primary
 import com.example.emaveganfood.ui.viewmodels.AddFoodViewModel
+import com.example.emaveganfood.utils.State
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @Preview
 @Composable
 fun AddFoodScreen(
     modifier: Modifier = Modifier,
-    viewModel: AddFoodViewModel = viewModel()
+    viewModel: AddFoodViewModel = hiltViewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     var hasImage by remember {
         mutableStateOf(false)
     }
@@ -162,7 +175,9 @@ fun AddFoodScreen(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-
+                    coroutineScope.launch {
+                        addFood(viewModel)
+                    }
                 }
             ),
         )
@@ -171,3 +186,20 @@ fun AddFoodScreen(
 
     }
 }
+
+private suspend fun addFood(viewModel: AddFoodViewModel) {
+    viewModel.addFood(Food(title = "test", description = "test")).collect() {
+        when(it) {
+            is State.Failed -> {
+                println("vlad: failed")
+            }
+            is State.Loading -> {
+                println("vlad: loading")
+            }
+            is State.Success -> {
+                println("vlad: success")
+            }
+        }
+    }
+}
+

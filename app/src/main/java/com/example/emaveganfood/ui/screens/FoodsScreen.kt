@@ -129,7 +129,7 @@ fun FoodItem(
                 .background(color)
         ) {
             Image(
-                painter = painterResource(food.imageResourceId),
+                painter = painterResource(R.drawable.ic_baseline_no_photography_24),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,7 +139,7 @@ fun FoodItem(
                 contentScale = ContentScale.Crop,
             )
             Text(
-                text = food.name,
+                text = food.title,
                 Modifier.padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
                 style = MaterialTheme.typography.h5,
             )

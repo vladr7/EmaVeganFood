@@ -31,6 +31,7 @@ import com.example.emaveganfood.ui.screens.*
 import com.example.emaveganfood.ui.theme.Primary
 import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(
@@ -120,7 +121,7 @@ fun VeganApp(
             }
             composable(route = NavigationItem.Foods.route) {
                 FoodsScreen(
-                    allFoods = DataSource.loadFoods(),
+                    allFoods = listOf(),
                     onAddFoodClicked = {
                         navController.navigate(NavigationItem.AddFood.route)
                     })
