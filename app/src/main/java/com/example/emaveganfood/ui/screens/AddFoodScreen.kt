@@ -43,6 +43,7 @@ import com.example.emaveganfood.utils.State
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
 
 @Preview
 @Composable
@@ -176,7 +177,7 @@ fun AddFoodScreen(
             keyboardActions = KeyboardActions(
                 onDone = {
                     coroutineScope.launch {
-                        addFood(viewModel)
+                        addFood(fileUri = imageUri, viewModel)
                     }
                 }
             ),
@@ -187,9 +188,26 @@ fun AddFoodScreen(
     }
 }
 
-private suspend fun addFood(viewModel: AddFoodViewModel) {
-    viewModel.addFood(Food(title = "test", description = "test")).collect() {
-        when(it) {
+private suspend fun addFood(fileUri: Uri?, viewModel: AddFoodViewModel) {
+    viewModel.addFood(fileUri = fileUri).collect() {
+        when (it) {
+            is State.Failed -> {
+                println("vlad: failed")
+            }
+            is State.Loading -> {
+                println("vlad: loading")
+            }
+            is State.Success -> {
+                println("vlad: success")
+                addFoodImageToStorage(fileUri, viewModel)
+            }
+        }
+    }
+}
+
+private suspend fun addFoodImageToStorage(fileUri: Uri?, viewModel: AddFoodViewModel) {
+    viewModel.addFoodImageToStorage(fileUri = fileUri).collect() {
+        when (it) {
             is State.Failed -> {
                 println("vlad: failed")
             }
@@ -202,4 +220,3 @@ private suspend fun addFood(viewModel: AddFoodViewModel) {
         }
     }
 }
-
