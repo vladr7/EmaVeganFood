@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -40,10 +39,21 @@ class FoodRepository: IFoodRepository {
         emit(State.loading())
 
         val extension = ".jpg"
-        val refStorage = FirebaseStorage.getInstance().reference.child("ALLFOODS/${food.id}$extension")
+        val refStorage = FirebaseStorage.getInstance().reference.child("$STORAGE_FOODS/${food.id}$extension")
         refStorage.putFile(fileUri).await()
 
         emit(State.success(refStorage))
+    }.catch {
+        emit(State.failed(it.message.toString()))
+    }.flowOn(Dispatchers.IO)
+
+    override fun getAllFoods() = flow<State<List<Food>>>{
+        emit(State.loading())
+
+        val snapshot = foodCollection.get().await()
+        val foods = snapshot.toObjects(Food::class.java)
+
+        emit(State.success(foods))
     }.catch {
         emit(State.failed(it.message.toString()))
     }.flowOn(Dispatchers.IO)

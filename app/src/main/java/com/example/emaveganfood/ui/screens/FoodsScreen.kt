@@ -26,8 +26,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emaveganfood.R
 import com.example.emaveganfood.ui.models.Food
+import com.example.emaveganfood.ui.viewmodels.AddFoodViewModel
+import com.example.emaveganfood.ui.viewmodels.FoodsViewModel
+import com.example.emaveganfood.utils.State
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
@@ -35,11 +42,16 @@ fun FoodsScreen(
     modifier: Modifier = Modifier,
     allFoods: List<Food>,
     onAddFoodClicked: () -> Unit,
+    viewModel: FoodsViewModel = hiltViewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val listState = rememberLazyListState()
     val fabVisibility by derivedStateOf {
         listState.firstVisibleItemIndex == 0
     }
+
+    printGetFoods(coroutineScope, viewModel)
 
     Scaffold(
         floatingActionButton = {
@@ -58,6 +70,24 @@ fun FoodsScreen(
             }
         }
 
+    }
+}
+
+fun printGetFoods(coroutineScope: CoroutineScope, viewModel: FoodsViewModel) {
+    coroutineScope.launch {
+        viewModel.getAllFoods().collectLatest {
+            when(it){
+                is State.Failed -> {
+
+                }
+                is State.Loading -> {
+
+                }
+                is State.Success -> {
+                    println(it.data)
+                }
+            }
+        }
     }
 }
 

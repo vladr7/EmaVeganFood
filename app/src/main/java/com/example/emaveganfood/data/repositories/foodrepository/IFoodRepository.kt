@@ -12,4 +12,6 @@ interface IFoodRepository {
     fun addFood(food: Food): Flow<State<Food>>
 
     fun addFoodImageToStorage(food:Food, fileUri: Uri): Flow<State<StorageReference>>
+
+    fun getAllFoods(): Flow<State<List<Food>>>
 }
