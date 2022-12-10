@@ -1,26 +1,19 @@
 package com.example.emaveganfood.ui.screens
 
+import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -28,22 +21,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.emaveganfood.ComposeFileProvider
 import com.example.emaveganfood.R
-import com.example.emaveganfood.navigation.NavigationItem
-import com.example.emaveganfood.ui.models.Food
-import com.example.emaveganfood.ui.theme.Primary
 import com.example.emaveganfood.ui.viewmodels.AddFoodViewModel
 import com.example.emaveganfood.utils.State
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
 
 @Preview
 @Composable
@@ -59,6 +42,10 @@ fun AddFoodScreen(
 
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
+    }
+
+    var isLoading by remember {
+        mutableStateOf(false)
     }
 
     val imagePicker = rememberLauncherForActivityResult(
@@ -176,8 +163,13 @@ fun AddFoodScreen(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    coroutineScope.launch {
-                        addFood(fileUri = imageUri, viewModel)
+                    if(!isLoading) {
+                        isLoading = true
+                        coroutineScope.launch {
+                            addFood(fileUri = imageUri, viewModel, context, onLoading = {
+                                isLoading = it
+                            })
+                        }
                     }
                 }
             ),
@@ -188,34 +180,45 @@ fun AddFoodScreen(
     }
 }
 
-private suspend fun addFood(fileUri: Uri?, viewModel: AddFoodViewModel) {
+private suspend fun addFood(
+    fileUri: Uri?,
+    viewModel: AddFoodViewModel,
+    context: Context,
+    onLoading: (Boolean) -> Unit
+) {
     viewModel.addFood(fileUri = fileUri).collect() {
         when (it) {
             is State.Failed -> {
-                println("vlad: failed")
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             }
             is State.Loading -> {
-                println("vlad: loading")
+                onLoading(true)
             }
             is State.Success -> {
-                println("vlad: success")
-                addFoodImageToStorage(fileUri, viewModel)
+                addFoodImageToStorage(fileUri, viewModel, context, onLoading)
             }
         }
     }
 }
 
-private suspend fun addFoodImageToStorage(fileUri: Uri?, viewModel: AddFoodViewModel) {
-    viewModel.addFoodImageToStorage(fileUri = fileUri).collect() {
+private suspend fun addFoodImageToStorage(
+    fileUri: Uri?,
+    viewModel: AddFoodViewModel,
+    context: Context,
+    onLoading: (Boolean) -> Unit
+) {
+    viewModel.addFoodImageToStorage(fileUri = fileUri).collect {
         when (it) {
             is State.Failed -> {
-                println("vlad: failed")
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             }
             is State.Loading -> {
-                println("vlad: loading")
+                Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+                onLoading(true)
             }
             is State.Success -> {
-                println("vlad: success")
+                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show()
+                onLoading(false)
             }
         }
     }
