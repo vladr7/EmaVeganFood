@@ -5,7 +5,6 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,12 +20,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.example.emaveganfood.R
 import com.example.emaveganfood.ui.models.Food
 import com.example.emaveganfood.ui.viewmodels.FoodsViewModel
@@ -82,8 +85,8 @@ fun getAllFoods(
     onFoodsListChanged: (List<Food>) -> Unit,
 ) {
     coroutineScope.launch {
-        viewModel.getAllFoods().collectLatest {
-            when (it) {
+        viewModel.allFoodsStateFlow.collectLatest { state ->
+            when (state) {
                 is State.Failed -> {
                     println()
                 }
@@ -91,7 +94,7 @@ fun getAllFoods(
                     println()
                 }
                 is State.Success -> {
-                    onFoodsListChanged(it.data)
+                    onFoodsListChanged(state.data)
                 }
             }
         }
@@ -165,15 +168,24 @@ fun FoodItem(
                 )
                 .background(color)
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_baseline_no_photography_24),
-                contentDescription = null,
+            SubcomposeAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
+                    .height(300.dp)
                     .padding(10.dp)
                     .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(food.imageRef)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
+                loading = {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(100.dp)
+                    )
+                }
             )
             Text(
                 text = food.title,

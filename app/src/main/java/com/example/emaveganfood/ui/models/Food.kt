@@ -10,4 +10,5 @@ data class Food(
     @SerialName("id") val id: String = "",
     @SerialName("title") val title: String = "",
     @SerialName("description") val description: String = "",
+    val imageRef: String = ""
 ): java.io.Serializable

@@ -1,7 +1,5 @@
 package com.example.emaveganfood
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
@@ -24,14 +22,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.emaveganfood.data.DataSource
 import com.example.emaveganfood.data.MainUiState
 import com.example.emaveganfood.navigation.NavigationItem
 import com.example.emaveganfood.ui.screens.*
 import com.example.emaveganfood.ui.theme.Primary
 import com.example.emaveganfood.ui.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(

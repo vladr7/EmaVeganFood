@@ -2,6 +2,7 @@ package com.example.emaveganfood.data.repositories.foodrepository
 
 import android.net.Uri
 import com.example.emaveganfood.ui.models.Food
+import com.example.emaveganfood.ui.models.FoodImage
 import com.example.emaveganfood.utils.State
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,6 +26,9 @@ class FoodRepository: IFoodRepository {
     private val foodCollection = FirebaseFirestore.getInstance()
         .collection(FIRESTORE_FOODS_COLLECTION)
 
+    val storage = FirebaseStorage.getInstance()
+    val gsReference = storage.getReferenceFromUrl("gs://emaveganapp.appspot.com/$STORAGE_FOODS/")
+
     override fun addFood(food: Food) = flow<State<Food>> {
         emit(State.loading())
 
@@ -47,15 +51,31 @@ class FoodRepository: IFoodRepository {
         emit(State.failed(it.message.toString()))
     }.flowOn(Dispatchers.IO)
 
-    override fun getAllFoods() = flow<State<List<Food>>>{
-        emit(State.loading())
-
+    override fun getAllFoods() = flow<List<Food>>{
         val snapshot = foodCollection.get().await()
         val foods = snapshot.toObjects(Food::class.java)
 
-        emit(State.success(foods))
+        emit(foods)
     }.catch {
-        emit(State.failed(it.message.toString()))
+        emit(listOf())
+    }.flowOn(Dispatchers.IO)
+
+
+    override fun getAllFoodImages() = flow<List<FoodImage>> {
+        val mutableListOfFoodImages = mutableListOf<FoodImage>()
+        val snapshot = gsReference.listAll().await()
+        snapshot.items.forEach { storageReference ->
+            mutableListOfFoodImages.add(
+                FoodImage(
+                    id = storageReference.name.removeSuffix(".jpg"),
+                    imageRef = storageReference.downloadUrl.await().toString()
+                )
+            )
+        }
+
+        emit(mutableListOfFoodImages.toList())
+    }.catch {
+        emit(listOf())
     }.flowOn(Dispatchers.IO)
 
 }
