@@ -121,7 +121,6 @@ fun VeganApp(
             }
             composable(route = NavigationItem.Foods.route) {
                 FoodsScreen(
-                    allFoods = listOf(),
                     onAddFoodClicked = {
                         navController.navigate(NavigationItem.AddFood.route)
                     })

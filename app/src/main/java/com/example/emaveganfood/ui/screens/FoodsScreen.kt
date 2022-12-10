@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emaveganfood.R
 import com.example.emaveganfood.ui.models.Food
-import com.example.emaveganfood.ui.viewmodels.AddFoodViewModel
 import com.example.emaveganfood.ui.viewmodels.FoodsViewModel
 import com.example.emaveganfood.utils.State
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +39,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun FoodsScreen(
     modifier: Modifier = Modifier,
-    allFoods: List<Food>,
     onAddFoodClicked: () -> Unit,
     viewModel: FoodsViewModel = hiltViewModel()
 ) {
@@ -50,8 +48,13 @@ fun FoodsScreen(
     val fabVisibility by derivedStateOf {
         listState.firstVisibleItemIndex == 0
     }
+    var allFoods by remember {
+        mutableStateOf(listOf<Food>())
+    }
 
-    printGetFoods(coroutineScope, viewModel)
+    getAllFoods(coroutineScope, viewModel, onFoodsListChanged = {
+        allFoods = it
+    })
 
     Scaffold(
         floatingActionButton = {
@@ -73,18 +76,22 @@ fun FoodsScreen(
     }
 }
 
-fun printGetFoods(coroutineScope: CoroutineScope, viewModel: FoodsViewModel) {
+fun getAllFoods(
+    coroutineScope: CoroutineScope,
+    viewModel: FoodsViewModel,
+    onFoodsListChanged: (List<Food>) -> Unit,
+) {
     coroutineScope.launch {
         viewModel.getAllFoods().collectLatest {
-            when(it){
+            when (it) {
                 is State.Failed -> {
-
+                    println()
                 }
                 is State.Loading -> {
-
+                    println()
                 }
                 is State.Success -> {
-                    println(it.data)
+                    onFoodsListChanged(it.data)
                 }
             }
         }
