@@ -11,12 +11,11 @@
     <string name="back_button">Inapoi</string>
     <string name="splash_screen_name">Splash Screen</string>
     <string name="login_screen_name">Login</string>
-    <string name="addfood_screen_name">Add Food</string>
-    <string name="account_screen_name">Account</string>
-    <string name="foods_screen_name">Foods</string>
-    <string name="favorites_screen_name">Favorites</string>
-    <string name="generate_screen_name">Generate</string>
-    <string name="expand_button_content_description">See more or less information about a food.</string>
+    <string name="addfood_screen_name">Adauga reteta</string>
+    <string name="account_screen_name">Cont</string>
+    <string name="foods_screen_name">Retete</string>
+    <string name="favorites_screen_name">Favorite</string>
+    <string name="generate_screen_name">Generare</string>
     <string name="descriere">Descriere</string>
     <string name="titlu">Titlu</string>
 </resources>

@@ -41,11 +41,11 @@ class AddFoodViewModel @Inject constructor(
 
     fun addFood(food: Food = foodItem, fileUri: Uri?): Flow<State<Food>> {
         if(!checkFieldsAreFilled()) {
-            return flowOf(State.failed("Please add title and description"))
+            return flowOf(State.failed("Te rog adauga titlu si o scurta descriere"))
         }
 
         if(fileUri == null) {
-            return flowOf(State.failed("Please add image"))
+            return flowOf(State.failed("Te rog adauga o poza cu reteta"))
         }
 
         return foodRepository.addFood(food)
@@ -53,11 +53,11 @@ class AddFoodViewModel @Inject constructor(
 
     fun addFoodImageToStorage(food: Food = foodItem, fileUri: Uri?): Flow<State<StorageReference>> {
         if(!checkFieldsAreFilled()) {
-            return flowOf(State.failed("Please add title and description"))
+            return flowOf(State.failed("Te rog adauga titlu si o scurta descriere"))
         }
 
         if(fileUri == null) {
-            return flowOf(State.failed("Please add image"))
+            return flowOf(State.failed("Te rog adauga o poza cu reteta"))
         }
 
         return foodRepository.addFoodImageToStorage(food, fileUri)

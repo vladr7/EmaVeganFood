@@ -124,7 +124,7 @@ fun AddFoodFab(
             modifier = Modifier
                 .padding(16.dp),
             text = {
-                Text(text = "Add Food")
+                Text(text = stringResource(id = R.string.addfood_title))
             },
             onClick = onAddFoodClicked,
             icon = {
