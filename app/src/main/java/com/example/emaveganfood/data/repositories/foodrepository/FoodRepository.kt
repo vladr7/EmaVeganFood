@@ -1,6 +1,8 @@
 package com.example.emaveganfood.data.repositories.foodrepository
 
+import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import com.example.emaveganfood.ui.models.Food
 import com.example.emaveganfood.ui.models.FoodImage
 import com.example.emaveganfood.utils.State
@@ -26,8 +28,8 @@ class FoodRepository: IFoodRepository {
     private val foodCollection = FirebaseFirestore.getInstance()
         .collection(FIRESTORE_FOODS_COLLECTION)
 
-    val storage = FirebaseStorage.getInstance()
-    val gsReference = storage.getReferenceFromUrl("gs://emaveganapp.appspot.com/$STORAGE_FOODS/")
+    private val storage = FirebaseStorage.getInstance()
+    private val gsReference = storage.getReferenceFromUrl("gs://emaveganapp.appspot.com/$STORAGE_FOODS/")
 
     override fun addFood(food: Food) = flow<State<Food>> {
         emit(State.loading())

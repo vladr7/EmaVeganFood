@@ -1,8 +1,11 @@
 package com.example.emaveganfood.ui.screens
 
 import android.content.Context
+import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
-import android.text.style.BackgroundColorSpan
+import android.provider.OpenableColumns
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,7 +17,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,7 +31,12 @@ import com.example.emaveganfood.R
 import com.example.emaveganfood.ui.theme.PrimaryTransparent
 import com.example.emaveganfood.ui.viewmodels.AddFoodViewModel
 import com.example.emaveganfood.utils.State
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.launch
+import java.io.*
 
 @Preview
 @Composable
@@ -217,7 +224,8 @@ private suspend fun addFoodImageToStorage(
     context: Context,
     onLoading: (Boolean) -> Unit
 ) {
-    viewModel.addFoodImageToStorage(fileUri = fileUri).collect {
+    val compressedImage = fileUri?.let { getCompressedImage(it, context) }
+    viewModel.addFoodImageToStorage(fileUri = compressedImage).collect {
         when (it) {
             is State.Failed -> {
                 Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
@@ -232,4 +240,67 @@ private suspend fun addFoodImageToStorage(
             }
         }
     }
+}
+
+suspend fun getCompressedImage(imageUri: Uri, context: Context): Uri {
+    val fileUri = getFilePathFromUri(imageUri, context)
+    val compressedImageFile = Compressor.compress(context, File(fileUri?.path.toString())) {
+        quality(50) // combine with compressor constraint
+        size(maxFileSize = 600000)
+        format(Bitmap.CompressFormat.JPEG)
+    }
+    return Uri.fromFile(compressedImageFile)
+}
+
+@Throws(IOException::class)
+fun getFilePathFromUri(uri: Uri, context: Context?): Uri? {
+    val fileName: String? = getFileName(uri, context)
+    val file = File(context?.externalCacheDir, fileName)
+    file.createNewFile()
+    FileOutputStream(file).use { outputStream ->
+        context?.contentResolver?.openInputStream(uri).use { inputStream ->
+            copyFile(inputStream, outputStream)
+            outputStream.flush()
+        }
+    }
+    return Uri.fromFile(file)
+}
+
+@Throws(IOException::class)
+private fun copyFile(`in`: InputStream?, out: OutputStream) {
+    val buffer = ByteArray(1024)
+    var read: Int? = null
+    while (`in`?.read(buffer).also({ read = it!! }) != -1) {
+        read?.let { out.write(buffer, 0, it) }
+    }
+}//copyFile ends
+
+fun getFileName(uri: Uri, context: Context?): String? {
+    var fileName: String? = getFileNameFromCursor(uri, context)
+    if (fileName == null) {
+        val fileExtension: String? = getFileExtension(uri, context)
+        fileName = "temp_file" + if (fileExtension != null) ".$fileExtension" else ""
+    } else if (!fileName.contains(".")) {
+        val fileExtension: String? = getFileExtension(uri, context)
+        fileName = "$fileName.$fileExtension"
+    }
+    return fileName
+}
+
+fun getFileExtension(uri: Uri, context: Context?): String? {
+    val fileType: String? = context?.contentResolver?.getType(uri)
+    return MimeTypeMap.getSingleton().getExtensionFromMimeType(fileType)
+}
+
+fun getFileNameFromCursor(uri: Uri, context: Context?): String? {
+    val fileCursor: Cursor? = context?.contentResolver
+        ?.query(uri, arrayOf<String>(OpenableColumns.DISPLAY_NAME), null, null, null)
+    var fileName: String? = null
+    if (fileCursor != null && fileCursor.moveToFirst()) {
+        val cIndex: Int = fileCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        if (cIndex != -1) {
+            fileName = fileCursor.getString(cIndex)
+        }
+    }
+    return fileName
 }
