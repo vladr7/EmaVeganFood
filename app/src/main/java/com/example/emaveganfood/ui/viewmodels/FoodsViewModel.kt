@@ -21,7 +21,7 @@ class FoodsViewModel @Inject constructor(
     private val _allFoodsStateFlow = MutableStateFlow<State<List<Food>>>(State.loading())
     val allFoodsStateFlow: StateFlow<State<List<Food>>> = _allFoodsStateFlow
 
-    init {
+    fun refreshAllFoodsList() {
         viewModelScope.launch {
             getAllFoodsWithImagesCombinedUseCase().collectLatest { state ->
                 when(state) {
