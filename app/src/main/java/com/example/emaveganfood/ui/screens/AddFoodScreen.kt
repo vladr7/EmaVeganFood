@@ -181,6 +181,7 @@ fun AddFoodScreen(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         if (!isLoading) {
+                            Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
                             isLoading = true
                             coroutineScope.launch {
                                 addFood(fileUri = imageUri, viewModel, context, onLoading = {
@@ -233,7 +234,6 @@ private suspend fun addFoodImageToStorage(
                 Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
             }
             is State.Loading -> {
-                Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
                 onLoading(true)
             }
             is State.Success -> {

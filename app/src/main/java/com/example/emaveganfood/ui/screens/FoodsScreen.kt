@@ -54,8 +54,12 @@ fun FoodsScreen(
     var allFoods by remember {
         mutableStateOf(listOf<Food>())
     }
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
 
     getAllFoods(coroutineScope, viewModel, onFoodsListChanged = {
+        isLoading = false
         allFoods = it
     })
 
@@ -66,8 +70,15 @@ fun FoodsScreen(
                 onAddFoodClicked = onAddFoodClicked
             )
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
     ) {
+        if(isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(150.dp)
+            )
+        }
         LazyColumn(
             state = listState
         ) {
