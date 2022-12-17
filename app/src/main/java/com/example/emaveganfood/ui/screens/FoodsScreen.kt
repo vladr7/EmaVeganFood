@@ -96,7 +96,6 @@ fun getAllFoods(
     onFoodsListChanged: (List<Food>) -> Unit,
 ) {
     coroutineScope.launch {
-        viewModel.refreshAllFoodsList()
         viewModel.allFoodsStateFlow.collectLatest { state ->
             when (state) {
                 is State.Failed -> {

@@ -1,8 +1,6 @@
 package com.example.emaveganfood.data.repositories.foodrepository
 
-import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
 import com.example.emaveganfood.ui.models.Food
 import com.example.emaveganfood.ui.models.FoodImage
 import com.example.emaveganfood.utils.State
@@ -11,6 +9,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -53,18 +53,27 @@ class FoodRepository: IFoodRepository {
         emit(State.failed(it.message.toString()))
     }.flowOn(Dispatchers.IO)
 
-    override fun getAllFoods() = flow<List<Food>>{
-        val snapshot = foodCollection.get().await()
-        val foods = snapshot.toObjects(Food::class.java)
-
-        emit(foods)
+    override fun getAllFoods() = callbackFlow<State<List<Food>>>{
+        trySend(State.loading())
+        val snapshotListener = foodCollection.addSnapshotListener { snapshot, error ->
+            if(snapshot != null) {
+                val foods = snapshot.toObjects(Food::class.java)
+                trySend(State.success(foods))
+            } else {
+                trySend(State.failed(error?.message ?: ""))
+            }
+        }
+        awaitClose {
+            snapshotListener.remove()
+        }
     }.catch {
-        emit(listOf())
+        emit(State.failed("failed to get foods"))
     }.flowOn(Dispatchers.IO)
 
 
     override fun getAllFoodImages() = flow<List<FoodImage>> {
         val mutableListOfFoodImages = mutableListOf<FoodImage>()
+
         val snapshot = gsReference.listAll().await()
         snapshot.items.forEach { storageReference ->
             mutableListOfFoodImages.add(
