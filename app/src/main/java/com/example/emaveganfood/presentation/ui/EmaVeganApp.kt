@@ -86,11 +86,11 @@ fun EmaVeganApp(
             )
         }
     ) { innerPadding ->
-        val mainUiState by mainViewModel.uiState.collectAsState()
+        val startDestination by mainViewModel.startDestination.collectAsState()
 
         NavHost(
             navController = navController,
-            startDestination = getStartDestination(mainUiState),
+            startDestination = startDestination,
             modifier = modifier.padding(innerPadding)
         ) {
 
@@ -132,10 +132,6 @@ fun EmaVeganApp(
         }
     }
 }
-
-fun getStartDestination(mainUiState: MainUiState): String =
-    if (mainUiState.isLoggedIn) NavigationItem.Foods.route else NavigationItem.Login.route
-
 
 @Composable
 fun TopBar(

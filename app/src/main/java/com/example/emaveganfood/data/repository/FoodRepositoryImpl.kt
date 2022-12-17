@@ -1,4 +1,4 @@
-package com.example.emaveganfood.data.repository.foodrepository
+package com.example.emaveganfood.data.repository
 
 import android.net.Uri
 import com.example.emaveganfood.presentation.models.Food
