@@ -1,7 +1,7 @@
 package com.example.emaveganfood.domain.usecases.foods
 
-import com.example.emaveganfood.ui.models.Food
-import com.example.emaveganfood.utils.State
+import com.example.emaveganfood.presentation.models.Food
+import com.example.emaveganfood.core.utils.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
