@@ -13,7 +13,7 @@ class GetAllFoodsWithImagesCombinedUseCase @Inject constructor(
     suspend operator fun invoke() = channelFlow<State<List<Food>>> {
         send(State.loading())
 
-        getAllFoodsUseCase().collectLatest { listState -> // this is reactive -> see repository
+        getAllFoodsUseCase().collectLatest { listState -> // todo this should be reactive
             when(val result = listState) {
                 is State.Success -> {
                     getAllFoodImagesUseCase().collectLatest { images ->

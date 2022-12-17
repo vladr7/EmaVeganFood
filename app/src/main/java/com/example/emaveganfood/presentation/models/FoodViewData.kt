@@ -1,6 +1,8 @@
 package com.example.emaveganfood.presentation.models
 
 import com.example.emaveganfood.data.models.Food
+import com.example.emaveganfood.presentation.models.helper.DataModelMapper
+import com.example.emaveganfood.presentation.models.helper.ViewData
 import javax.inject.Inject
 
 data class FoodViewData(

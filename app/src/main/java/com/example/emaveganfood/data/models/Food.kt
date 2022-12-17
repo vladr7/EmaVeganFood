@@ -1,5 +1,6 @@
 package com.example.emaveganfood.data.models
 
+import com.example.emaveganfood.data.models.helper.Model
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import kotlinx.serialization.SerialName
