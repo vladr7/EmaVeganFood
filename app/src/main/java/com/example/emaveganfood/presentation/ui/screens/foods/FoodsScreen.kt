@@ -1,6 +1,7 @@
 package com.example.emaveganfood.presentation.ui.screens.foods
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.keyframes
@@ -43,23 +44,13 @@ fun FoodsScreen(
     onAddFoodClicked: () -> Unit,
     viewModel: FoodsViewModel = hiltViewModel()
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val state by viewModel.state.collectAsState()
 
     val listState = rememberLazyListState()
     val fabVisibility by derivedStateOf {
         listState.firstVisibleItemIndex == 0
     }
-    var allFoods by remember {
-        mutableStateOf(listOf<FoodViewData>())
-    }
-    var isLoading by remember {
-        mutableStateOf(true)
-    }
-
-    getAllFoods(coroutineScope, viewModel, onFoodsListChanged = {
-        isLoading = false
-        allFoods = it
-    })
 
     Scaffold(
         floatingActionButton = {
@@ -70,43 +61,24 @@ fun FoodsScreen(
         },
         floatingActionButtonPosition = FabPosition.End,
     ) {
-        if(isLoading) {
+        if (state.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(150.dp)
             )
         }
+        if (state.errorMessage != null) {
+            Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+        }
         LazyColumn(
             state = listState
         ) {
-            items(allFoods) { food ->
+            items(state.listAllFoods) { food ->
                 FoodItem(food = food)
             }
         }
 
-    }
-}
-
-fun getAllFoods(
-    coroutineScope: CoroutineScope,
-    viewModel: FoodsViewModel,
-    onFoodsListChanged: (List<FoodViewData>) -> Unit,
-) {
-    coroutineScope.launch {
-        viewModel.allFoodsStateFlow.collectLatest { state ->
-            when (state) {
-                is State.Failed -> {
-                    println()
-                }
-                is State.Loading -> {
-                    println()
-                }
-                is State.Success -> {
-                    onFoodsListChanged(state.data)
-                }
-            }
-        }
     }
 }
 
