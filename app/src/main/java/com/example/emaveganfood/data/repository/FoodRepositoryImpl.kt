@@ -1,8 +1,8 @@
 package com.example.emaveganfood.data.repository
 
 import android.net.Uri
-import com.example.emaveganfood.presentation.models.Food
-import com.example.emaveganfood.presentation.models.FoodImage
+import com.example.emaveganfood.data.models.Food
+import com.example.emaveganfood.data.models.FoodImage
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.domain.repository.IFoodRepository
 import com.google.firebase.auth.FirebaseAuth

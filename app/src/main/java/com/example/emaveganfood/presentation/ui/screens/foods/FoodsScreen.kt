@@ -29,8 +29,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emaveganfood.R
-import com.example.emaveganfood.presentation.models.Food
+import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.core.utils.State
+import com.example.emaveganfood.presentation.models.FoodViewData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ fun FoodsScreen(
         listState.firstVisibleItemIndex == 0
     }
     var allFoods by remember {
-        mutableStateOf(listOf<Food>())
+        mutableStateOf(listOf<FoodViewData>())
     }
     var isLoading by remember {
         mutableStateOf(true)
@@ -90,7 +91,7 @@ fun FoodsScreen(
 fun getAllFoods(
     coroutineScope: CoroutineScope,
     viewModel: FoodsViewModel,
-    onFoodsListChanged: (List<Food>) -> Unit,
+    onFoodsListChanged: (List<FoodViewData>) -> Unit,
 ) {
     coroutineScope.launch {
         viewModel.allFoodsStateFlow.collectLatest { state ->
@@ -145,7 +146,7 @@ fun AddFoodFab(
 
 @Composable
 fun FoodItem(
-    food: Food,
+    food: FoodViewData,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember {

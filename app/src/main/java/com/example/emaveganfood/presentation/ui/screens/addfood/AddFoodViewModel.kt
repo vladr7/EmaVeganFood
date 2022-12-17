@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.emaveganfood.domain.repository.IFoodRepository
-import com.example.emaveganfood.presentation.models.Food
+import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.core.utils.State
 import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.lifecycle.HiltViewModel

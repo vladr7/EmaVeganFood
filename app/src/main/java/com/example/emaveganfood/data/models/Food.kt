@@ -1,4 +1,4 @@
-package com.example.emaveganfood.presentation.models
+package com.example.emaveganfood.data.models
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
@@ -11,6 +11,6 @@ data class Food(
     @SerialName("id") val id: String = "",
     @SerialName("title") val title: String = "",
     @SerialName("description") val description: String = "",
-    val imageRef: String = "",
-    val timeInSeconds: Long = Timestamp.now().seconds,
-): java.io.Serializable
+    @SerialName("timeInSeconds") val timeInSeconds: Long = Timestamp.now().seconds,
+    val imageRef: String = ""
+): java.io.Serializable, Model()
