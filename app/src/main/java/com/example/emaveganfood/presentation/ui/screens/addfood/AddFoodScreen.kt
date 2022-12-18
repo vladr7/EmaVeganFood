@@ -195,6 +195,8 @@ private suspend fun addFood(
     context: Context,
     onLoading: (Boolean) -> Unit
 ) {
+    addFoodImageToStorage(fileUri, viewModel, context, onLoading)
+
     viewModel.addFood(fileUri = fileUri).collect() {
         when (it) {
             is State.Failed -> {
@@ -204,7 +206,8 @@ private suspend fun addFood(
                 onLoading(true)
             }
             is State.Success -> {
-                addFoodImageToStorage(fileUri, viewModel, context, onLoading)
+                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show()
+                onLoading(false)
             }
         }
     }
@@ -226,7 +229,6 @@ private suspend fun addFoodImageToStorage(
                 onLoading(true)
             }
             is State.Success -> {
-                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show()
                 onLoading(false)
             }
         }
