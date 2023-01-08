@@ -1,22 +1,14 @@
 package com.example.emaveganfood.presentation.ui.screens.addfood
 
 import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.example.emaveganfood.domain.repository.IFoodRepository
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.domain.usecases.foods.AddFoodImageToStorageUseCase
 import com.example.emaveganfood.domain.usecases.foods.AddFoodUseCase
 import com.example.emaveganfood.presentation.base.BaseViewModel
 import com.example.emaveganfood.presentation.base.ViewState
-import com.example.emaveganfood.presentation.models.FoodViewData
-import com.example.emaveganfood.presentation.ui.screens.foods.FoodsViewState
-import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -55,9 +47,10 @@ class AddFoodViewModel @Inject constructor(
         }
     }
 
-    fun addFood() {
+    // todo: maybe combine this and below function into a single usecase
+    fun addFoodAndImage() {
         viewModelScope.launch {
-            addFoodUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
+            addFoodImageToStorageUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
                 when(state) {
                     is State.Failed -> {
                         showError(errorMessage = state.message)
@@ -66,21 +59,16 @@ class AddFoodViewModel @Inject constructor(
                         showLoading()
                     }
                     is State.Success -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = null,
-                            )
-                        }
+                        addFoodToFirestore()
                     }
                 }
             }
         }
     }
 
-    fun addFoodImageToStorage() {
+    private fun addFoodToFirestore() {
         viewModelScope.launch {
-            addFoodImageToStorageUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
+            addFoodUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
                 when(state) {
                     is State.Failed -> {
                         showError(errorMessage = state.message)

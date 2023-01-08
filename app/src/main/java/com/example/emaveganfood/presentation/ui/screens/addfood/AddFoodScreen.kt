@@ -1,7 +1,5 @@
 package com.example.emaveganfood.presentation.ui.screens.addfood
 
-import android.content.Context
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,9 +23,6 @@ import coil.compose.AsyncImage
 import com.example.emaveganfood.core.utils.ComposeFileProvider
 import com.example.emaveganfood.R
 import com.example.emaveganfood.presentation.theme.PrimaryTransparent
-import com.example.emaveganfood.core.utils.State
-import com.example.emaveganfood.core.utils.getCompressedImage
-import kotlinx.coroutines.launch
 
 @Preview
 @Composable
@@ -170,8 +165,7 @@ fun AddFoodScreen(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        viewModel.addFoodImageToStorage()
-                        viewModel.addFood()
+                        viewModel.addFoodAndImage()
                     }
                 ),
             )
