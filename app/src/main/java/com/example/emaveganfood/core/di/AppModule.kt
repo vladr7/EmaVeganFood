@@ -4,9 +4,7 @@ import com.example.emaveganfood.data.repository.FoodRepositoryImpl
 import com.example.emaveganfood.data.repository.UserRepositoryImpl
 import com.example.emaveganfood.domain.repository.IFoodRepository
 import com.example.emaveganfood.domain.repository.IUserRepository
-import com.example.emaveganfood.domain.usecases.foods.GetAllFoodImagesUseCase
-import com.example.emaveganfood.domain.usecases.foods.GetAllFoodsUseCase
-import com.example.emaveganfood.domain.usecases.foods.GetAllFoodsWithImagesCombinedUseCase
+import com.example.emaveganfood.domain.usecases.foods.*
 import com.example.emaveganfood.domain.usecases.navigation.GetStartDestinationUseCase
 import dagger.Module
 import dagger.Provides
@@ -51,5 +49,26 @@ object AppModule {
     ) = GetAllFoodsWithImagesCombinedUseCase(
         getAllFoodsUseCase,
         getAllFoodImagesUseCase
+    )
+
+    @Provides
+    fun provideCheckFieldsAreFilledUseCase() = CheckFieldsAreFilledUseCase()
+
+    @Provides
+    fun provideAddFoodUseCase(
+        foodsRepository: IFoodRepository,
+        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
+    ) = AddFoodUseCase(
+        foodsRepository,
+        checkFieldsAreFilledUseCase
+    )
+
+    @Provides
+    fun provideAddFoodImageToStorageUseCase(
+        foodsRepository: IFoodRepository,
+        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
+    ) = AddFoodImageToStorageUseCase(
+        foodsRepository,
+        checkFieldsAreFilledUseCase
     )
 }

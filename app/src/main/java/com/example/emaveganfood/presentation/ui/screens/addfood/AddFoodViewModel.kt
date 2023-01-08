@@ -4,70 +4,135 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.emaveganfood.domain.repository.IFoodRepository
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.core.utils.State
+import com.example.emaveganfood.domain.usecases.foods.AddFoodImageToStorageUseCase
+import com.example.emaveganfood.domain.usecases.foods.AddFoodUseCase
+import com.example.emaveganfood.presentation.base.BaseViewModel
+import com.example.emaveganfood.presentation.base.ViewState
+import com.example.emaveganfood.presentation.models.FoodViewData
+import com.example.emaveganfood.presentation.ui.screens.foods.FoodsViewState
 import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class AddFoodViewModel @Inject constructor(
-    private val foodRepository: IFoodRepository
-): ViewModel() {
+    private val addFoodUseCase: AddFoodUseCase,
+    private val addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase
+): BaseViewModel() {
 
-    var foodTitle by mutableStateOf("")
-        private set
-
-    var foodDescription by mutableStateOf("")
-        private set
-
-    var foodItem by mutableStateOf(Food(id = UUID.randomUUID().toString()))
-        private set
+    private val _state = MutableStateFlow<AddFoodViewState>(AddFoodViewState())
+    val state: StateFlow<AddFoodViewState> = _state
 
     fun updateFoodTitle(title: String) {
-        foodTitle = title
-        foodItem = foodItem.copy(title = foodTitle)
+        _state.update {
+            it.copy(foodTitle = title, foodItem = it.foodItem.copy(title = title))
+        }
     }
 
     fun updateFoodDescription(description: String) {
-        foodDescription = description
-        foodItem = foodItem.copy(description = foodDescription)
+        _state.update {
+            it.copy(foodDescription = description, foodItem = it.foodItem.copy(description = description))
+        }
     }
 
-    fun addFood(food: Food = foodItem, fileUri: Uri?): Flow<State<Food>> {
-        if(!checkFieldsAreFilled()) {
-            return flowOf(State.failed("Te rog adauga titlu si o scurta descriere"))
+    fun updateImageUri(imageUri: Uri?) {
+        _state.update {
+            it.copy(imageUri = imageUri)
         }
-
-        if(fileUri == null) {
-            return flowOf(State.failed("Te rog adauga o poza cu reteta"))
-        }
-
-        return foodRepository.addFood(food)
     }
 
-    fun addFoodImageToStorage(food: Food = foodItem, fileUri: Uri?): Flow<State<StorageReference>> {
-        if(!checkFieldsAreFilled()) {
-            return flowOf(State.failed("Te rog adauga titlu si o scurta descriere"))
+    fun updateHasImage(hasImage: Boolean) {
+        _state.update {
+            it.copy(hasImage = hasImage)
         }
-
-        if(fileUri == null) {
-            return flowOf(State.failed("Te rog adauga o poza cu reteta"))
-        }
-
-        return foodRepository.addFoodImageToStorage(food, fileUri)
     }
 
-    private fun checkFieldsAreFilled(): Boolean {
-        if(foodItem.title.isEmpty() || foodDescription.isEmpty()) {
-            return false
+    fun addFood() {
+        viewModelScope.launch {
+            addFoodUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
+                when(state) {
+                    is State.Failed -> {
+                        showError(errorMessage = state.message)
+                    }
+                    is State.Loading -> {
+                        showLoading()
+                    }
+                    is State.Success -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = null,
+                            )
+                        }
+                    }
+                }
+            }
         }
-        return true
+    }
+
+    fun addFoodImageToStorage() {
+        viewModelScope.launch {
+            addFoodImageToStorageUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
+                when(state) {
+                    is State.Failed -> {
+                        showError(errorMessage = state.message)
+                    }
+                    is State.Loading -> {
+                        showLoading()
+                    }
+                    is State.Success -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = null,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun showError(errorMessage: String) {
+        _state.update {
+            it.copy(errorMessage = errorMessage, isLoading = false)
+        }
+    }
+
+    override fun hideError() {
+        _state.update {
+            it.copy(errorMessage = null, isLoading = false)
+        }
+    }
+
+    override fun showLoading() {
+        _state.update {
+            it.copy(isLoading = true)
+        }
+    }
+
+    override fun hideLoading() {
+        _state.update {
+            it.copy(isLoading = false)
+        }
     }
 
 }
+
+data class AddFoodViewState(
+    override val isLoading: Boolean = false,
+    override val errorMessage: String? = null,
+    val foodTitle: String = "",
+    val foodDescription: String = "",
+    val foodItem: Food = Food(id = UUID.randomUUID().toString()),
+    val hasImage: Boolean = false,
+    val imageUri: Uri? = null
+) : ViewState(isLoading, errorMessage)

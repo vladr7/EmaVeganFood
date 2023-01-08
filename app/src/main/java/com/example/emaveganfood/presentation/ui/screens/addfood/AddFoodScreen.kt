@@ -35,37 +35,31 @@ fun AddFoodScreen(
     modifier: Modifier = Modifier,
     viewModel: AddFoodViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val state by viewModel.state.collectAsState()
+
+    if (state.errorMessage != null) {
+        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = PrimaryTransparent)
     ) {
-        val coroutineScope = rememberCoroutineScope()
-
-        var hasImage by remember {
-            mutableStateOf(false)
-        }
-
-        var imageUri by remember {
-            mutableStateOf<Uri?>(null)
-        }
-
-        var isLoading by remember {
-            mutableStateOf(false)
-        }
 
         val imagePicker = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
             onResult = { uri ->
-                hasImage = uri != null
-                imageUri = uri
+                viewModel.updateHasImage(uri != null)
+                viewModel.updateImageUri(uri)
             }
         )
 
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture(),
             onResult = { success ->
-                hasImage = success
+                viewModel.updateHasImage(success)
             }
         )
 
@@ -77,7 +71,6 @@ fun AddFoodScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val context = LocalContext.current
 
             Spacer(modifier = Modifier.padding(24.dp))
             Column(
@@ -86,7 +79,7 @@ fun AddFoodScreen(
             ) {
                 Button(onClick = {
                     val uri = ComposeFileProvider.getImageUri(context)
-                    imageUri = uri
+                    viewModel.updateImageUri(uri)
                     cameraLauncher.launch(uri)
                 }) {
                     Text(text = "Camera")
@@ -103,9 +96,17 @@ fun AddFoodScreen(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-            if (hasImage && imageUri != null) {
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(150.dp)
+                )
+            }
+
+            if (state.hasImage && state.imageUri != null) {
                 AsyncImage(
-                    model = imageUri,
+                    model = state.imageUri,
                     modifier = Modifier
                         .width(200.dp)
                         .height(200.dp),
@@ -124,7 +125,7 @@ fun AddFoodScreen(
             Spacer(modifier = Modifier.padding(8.dp))
 
             OutlinedTextField(
-                value = viewModel.foodTitle,
+                value = state.foodTitle,
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +150,7 @@ fun AddFoodScreen(
             )
 
             OutlinedTextField(
-                value = viewModel.foodDescription,
+                value = state.foodDescription,
                 singleLine = false,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -169,15 +170,8 @@ fun AddFoodScreen(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        if (!isLoading) {
-                            Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
-                            isLoading = true
-                            coroutineScope.launch {
-                                addFood(fileUri = imageUri, viewModel, context, onLoading = {
-                                    isLoading = it
-                                })
-                            }
-                        }
+                        viewModel.addFoodImageToStorage()
+                        viewModel.addFood()
                     }
                 ),
             )
@@ -186,53 +180,8 @@ fun AddFoodScreen(
 
         }
     }
-
 }
 
-private suspend fun addFood(
-    fileUri: Uri?,
-    viewModel: AddFoodViewModel,
-    context: Context,
-    onLoading: (Boolean) -> Unit
-) {
-    addFoodImageToStorage(fileUri, viewModel, context, onLoading)
 
-    viewModel.addFood(fileUri = fileUri).collect() {
-        when (it) {
-            is State.Failed -> {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-            }
-            is State.Loading -> {
-                onLoading(true)
-            }
-            is State.Success -> {
-                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show()
-                onLoading(false)
-            }
-        }
-    }
-}
-
-private suspend fun addFoodImageToStorage(
-    fileUri: Uri?,
-    viewModel: AddFoodViewModel,
-    context: Context,
-    onLoading: (Boolean) -> Unit
-) {
-    val compressedImage = fileUri?.let { getCompressedImage(it, context) }
-    viewModel.addFoodImageToStorage(fileUri = compressedImage).collect {
-        when (it) {
-            is State.Failed -> {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-            }
-            is State.Loading -> {
-                onLoading(true)
-            }
-            is State.Success -> {
-                onLoading(false)
-            }
-        }
-    }
-}
 
 
