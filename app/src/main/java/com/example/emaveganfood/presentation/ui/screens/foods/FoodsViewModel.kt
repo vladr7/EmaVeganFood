@@ -3,6 +3,8 @@ package com.example.emaveganfood.presentation.ui.screens.foods
 import androidx.lifecycle.viewModelScope
 import com.example.emaveganfood.domain.usecases.foods.GetAllFoodsWithImagesCombinedUseCase
 import com.example.emaveganfood.core.utils.State
+import com.example.emaveganfood.data.repository.NetworkConnectionManagerImpl
+import com.example.emaveganfood.domain.repository.INetworkConnectionManager
 import com.example.emaveganfood.presentation.base.BaseViewModel
 import com.example.emaveganfood.presentation.base.ViewState
 import com.example.emaveganfood.presentation.models.FoodMapper
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodsViewModel @Inject constructor(
     private val getAllFoodsWithImagesCombinedUseCase: GetAllFoodsWithImagesCombinedUseCase,
-    private val foodMapper: FoodMapper
+    private val foodMapper: FoodMapper,
+    private val networkConnectionManager: INetworkConnectionManager
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<FoodsViewState>(FoodsViewState())
@@ -26,6 +29,7 @@ class FoodsViewModel @Inject constructor(
 
     init {
         getFoodsAndImages()
+        getNetworkStatus()
     }
 
     private fun getFoodsAndImages() {
@@ -49,6 +53,19 @@ class FoodsViewModel @Inject constructor(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun getNetworkStatus() {
+        networkConnectionManager.startListenNetworkState()
+        viewModelScope.launch {
+            networkConnectionManager.isNetworkConnectedFlow.collectLatest { networkStatus ->
+                _state.update {
+                    it.copy(
+                        isNetworkAvailable = networkStatus
+                    )
                 }
             }
         }
@@ -83,4 +100,5 @@ data class FoodsViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val listAllFoods: List<FoodViewData> = emptyList(),
+    val isNetworkAvailable: Boolean? = null,
 ) : ViewState(isLoading, errorMessage)

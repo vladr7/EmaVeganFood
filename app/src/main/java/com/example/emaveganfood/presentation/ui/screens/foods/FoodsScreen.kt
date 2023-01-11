@@ -71,6 +71,10 @@ fun FoodsScreen(
         if (state.errorMessage != null) {
             Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
         }
+        // todo show a textview instead of toast
+        if(state.isNetworkAvailable == false) {
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show()
+        }
         LazyColumn(
             state = listState
         ) {
