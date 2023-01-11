@@ -24,8 +24,6 @@ class FoodRepositoryImpl: IFoodRepository {
         const val STORAGE_FOODS = "ALLFOODS"
     }
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
-
     private val foodCollection = FirebaseFirestore.getInstance()
         .collection(FIRESTORE_FOODS_COLLECTION)
 
