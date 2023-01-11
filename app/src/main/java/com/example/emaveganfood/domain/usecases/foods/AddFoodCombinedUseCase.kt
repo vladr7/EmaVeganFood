@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class AddFoodToFirebaseCombinedUseCase @Inject constructor(
-    private val addFoodUseCase: AddFoodUseCase,
+class AddFoodCombinedUseCase @Inject constructor(
+    private val addFoodToDatabaseUseCase: AddFoodToDatabaseUseCase,
     private val addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase
 ) {
 
@@ -22,7 +22,7 @@ class AddFoodToFirebaseCombinedUseCase @Inject constructor(
                     send(State.loading())
                 }
                 is State.Success -> {
-                    addFoodUseCase(food, imageUri).collectLatest { foodState ->
+                    addFoodToDatabaseUseCase(food, imageUri).collectLatest { foodState ->
                         when(foodState) {
                             is State.Failed -> {
                                 send(State.failed(foodState.message))

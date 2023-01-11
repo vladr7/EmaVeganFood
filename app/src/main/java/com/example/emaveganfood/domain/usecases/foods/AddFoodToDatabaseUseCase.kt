@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
-class AddFoodUseCase @Inject constructor(
+class AddFoodToDatabaseUseCase @Inject constructor(
     private val foodRepository: IFoodRepository,
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
 ) {

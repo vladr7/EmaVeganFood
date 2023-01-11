@@ -58,7 +58,7 @@ object AppModule {
     fun provideAddFoodUseCase(
         foodsRepository: IFoodRepository,
         checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
-    ) = AddFoodUseCase(
+    ) = AddFoodToDatabaseUseCase(
         foodsRepository,
         checkFieldsAreFilledUseCase
     )
@@ -74,10 +74,10 @@ object AppModule {
 
     @Provides
     fun provideAddFoodToFirebaseCombinedUseCase(
-        addFoodUseCase: AddFoodUseCase,
+        addFoodToDatabaseUseCase: AddFoodToDatabaseUseCase,
         addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase
-    ) = AddFoodToFirebaseCombinedUseCase(
-        addFoodUseCase,
+    ) = AddFoodCombinedUseCase(
+        addFoodToDatabaseUseCase,
         addFoodImageToStorageUseCase
     )
 }
