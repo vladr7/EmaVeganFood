@@ -29,6 +29,7 @@ import com.example.emaveganfood.presentation.ui.screens.addfood.AddFoodScreen
 import com.example.emaveganfood.presentation.ui.screens.foods.FoodsScreen
 import com.example.emaveganfood.presentation.ui.screens.login.LoginScreen
 import com.example.emaveganfood.presentation.theme.Primary
+import com.example.emaveganfood.presentation.ui.screens.account.AccountScreen
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 

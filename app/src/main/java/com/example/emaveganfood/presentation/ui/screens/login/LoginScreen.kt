@@ -27,14 +27,13 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel = viewModel(),
+    viewModel: LoginViewModel = viewModel(),
     onSuccesLogin: () -> Unit = {},
 ) {
 
     val coroutineScope = rememberCoroutineScope()
+    val state by viewModel.state.collectAsState()
     var text by remember { mutableStateOf<String?>(null) }
-    val user by remember(loginViewModel) { loginViewModel.user }.collectAsState()
-    val shouldNavigate by remember(loginViewModel) { loginViewModel.shouldNavigate }.collectAsState()
     var navigated by remember { mutableStateOf<Boolean>(false) }
     val signInRequestCode = 1
 
@@ -46,7 +45,7 @@ fun LoginScreen(
                     text = "Google sign in failed"
                 } else {
                     coroutineScope.launch {
-                        loginViewModel.signIn(
+                        viewModel.signIn(
                             email = account.email.toString(),
                             displayName = account.displayName.toString(),
                             idToken = account.idToken ?: ""
@@ -66,7 +65,7 @@ fun LoginScreen(
         }
     )
 
-    if(shouldNavigate == true && !navigated) {
+    if(state.shouldNavigate == true && !navigated) {
         navigated = true
         onSuccesLogin()
     }
