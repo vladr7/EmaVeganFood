@@ -71,4 +71,13 @@ object AppModule {
         foodsRepository,
         checkFieldsAreFilledUseCase
     )
+
+    @Provides
+    fun provideAddFoodToFirebaseCombinedUseCase(
+        addFoodUseCase: AddFoodUseCase,
+        addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase
+    ) = AddFoodToFirebaseCombinedUseCase(
+        addFoodUseCase,
+        addFoodImageToStorageUseCase
+    )
 }

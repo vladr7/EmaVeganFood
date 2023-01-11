@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.domain.usecases.foods.AddFoodImageToStorageUseCase
+import com.example.emaveganfood.domain.usecases.foods.AddFoodToFirebaseCombinedUseCase
 import com.example.emaveganfood.domain.usecases.foods.AddFoodUseCase
 import com.example.emaveganfood.presentation.base.BaseViewModel
 import com.example.emaveganfood.presentation.base.ViewState
@@ -16,8 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddFoodViewModel @Inject constructor(
-    private val addFoodUseCase: AddFoodUseCase,
-    private val addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase
+    private val addFoodToFirebaseCombinedUseCase: AddFoodToFirebaseCombinedUseCase
 ): BaseViewModel() {
 
     private val _state = MutableStateFlow<AddFoodViewState>(AddFoodViewState())
@@ -47,28 +47,9 @@ class AddFoodViewModel @Inject constructor(
         }
     }
 
-    // todo: maybe combine this and below function into a single usecase
     fun addFoodAndImage() {
         viewModelScope.launch {
-            addFoodImageToStorageUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
-                when(state) {
-                    is State.Failed -> {
-                        showError(errorMessage = state.message)
-                    }
-                    is State.Loading -> {
-                        showLoading()
-                    }
-                    is State.Success -> {
-                        addFoodToFirestore()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun addFoodToFirestore() {
-        viewModelScope.launch {
-            addFoodUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
+            addFoodToFirebaseCombinedUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
                 when(state) {
                     is State.Failed -> {
                         showError(errorMessage = state.message)
