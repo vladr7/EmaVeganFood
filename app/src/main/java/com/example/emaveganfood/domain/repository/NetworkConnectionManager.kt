@@ -2,7 +2,7 @@ package com.example.emaveganfood.domain.repository
 
 import kotlinx.coroutines.flow.StateFlow
 
-interface INetworkConnectionManager {
+interface NetworkConnectionManager {
 
     val isNetworkConnectedFlow: StateFlow<Boolean>
 

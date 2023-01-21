@@ -4,8 +4,7 @@ import android.net.Uri
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.data.models.FoodImage
 import com.example.emaveganfood.core.utils.State
-import com.example.emaveganfood.domain.repository.IFoodRepository
-import com.google.firebase.auth.FirebaseAuth
+import com.example.emaveganfood.domain.repository.FoodRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -17,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 
-class FoodRepositoryImpl: IFoodRepository {
+class DefaultFoodRepository: FoodRepository {
 
     companion object {
         const val FIRESTORE_FOODS_COLLECTION = "ALLFOODS"

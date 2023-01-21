@@ -1,9 +1,9 @@
 package com.example.emaveganfood.data.repository
 
-import com.example.emaveganfood.domain.repository.IUserRepository
+import com.example.emaveganfood.domain.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class UserRepositoryImpl: IUserRepository {
+class DefaultUserRepository: UserRepository {
 
     override fun isUserLoggedIn() = FirebaseAuth.getInstance().currentUser != null
 }

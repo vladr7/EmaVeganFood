@@ -4,16 +4,16 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import com.example.emaveganfood.domain.repository.INetworkConnectionManager
+import com.example.emaveganfood.domain.repository.NetworkConnectionManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class NetworkConnectionManagerImpl @Inject constructor(
+class DefaultNetworkConnectionManager @Inject constructor(
     @ApplicationContext context: Context,
     coroutineScope: CoroutineScope
-) : INetworkConnectionManager {
+) : NetworkConnectionManager {
 
     private val connectivityManager: ConnectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 

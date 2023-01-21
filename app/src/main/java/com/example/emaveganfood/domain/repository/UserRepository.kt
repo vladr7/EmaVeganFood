@@ -1,6 +1,6 @@
 package com.example.emaveganfood.domain.repository
 
-interface IUserRepository {
+interface UserRepository {
 
     fun isUserLoggedIn(): Boolean
 }

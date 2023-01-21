@@ -3,8 +3,7 @@ package com.example.emaveganfood.presentation.ui.screens.foods
 import androidx.lifecycle.viewModelScope
 import com.example.emaveganfood.domain.usecases.foods.GetAllFoodsWithImagesCombinedUseCase
 import com.example.emaveganfood.core.utils.State
-import com.example.emaveganfood.data.repository.NetworkConnectionManagerImpl
-import com.example.emaveganfood.domain.repository.INetworkConnectionManager
+import com.example.emaveganfood.domain.repository.NetworkConnectionManager
 import com.example.emaveganfood.presentation.base.BaseViewModel
 import com.example.emaveganfood.presentation.base.ViewState
 import com.example.emaveganfood.presentation.models.FoodMapper
@@ -21,7 +20,7 @@ import javax.inject.Inject
 class FoodsViewModel @Inject constructor(
     private val getAllFoodsWithImagesCombinedUseCase: GetAllFoodsWithImagesCombinedUseCase,
     private val foodMapper: FoodMapper,
-    private val networkConnectionManager: INetworkConnectionManager
+    private val networkConnectionManager: NetworkConnectionManager
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<FoodsViewState>(FoodsViewState())

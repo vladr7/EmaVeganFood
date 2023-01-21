@@ -3,14 +3,14 @@ package com.example.emaveganfood.domain.usecases.foods
 import android.net.Uri
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.data.models.Food
-import com.example.emaveganfood.domain.repository.IFoodRepository
+import com.example.emaveganfood.domain.repository.FoodRepository
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 class AddFoodImageToStorageUseCase @Inject constructor(
-    private val foodRepository: IFoodRepository,
+    private val foodRepository: FoodRepository,
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
     ) {
 

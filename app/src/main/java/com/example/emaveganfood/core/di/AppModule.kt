@@ -1,18 +1,17 @@
 package com.example.emaveganfood.core.di
 
 import android.content.Context
-import com.example.emaveganfood.data.repository.FoodRepositoryImpl
-import com.example.emaveganfood.data.repository.NetworkConnectionManagerImpl
-import com.example.emaveganfood.data.repository.UserRepositoryImpl
-import com.example.emaveganfood.domain.repository.IFoodRepository
-import com.example.emaveganfood.domain.repository.IUserRepository
-import com.example.emaveganfood.domain.repository.INetworkConnectionManager
+import com.example.emaveganfood.data.repository.DefaultFoodRepository
+import com.example.emaveganfood.data.repository.DefaultNetworkConnectionManager
+import com.example.emaveganfood.data.repository.DefaultUserRepository
+import com.example.emaveganfood.domain.repository.FoodRepository
+import com.example.emaveganfood.domain.repository.UserRepository
+import com.example.emaveganfood.domain.repository.NetworkConnectionManager
 import com.example.emaveganfood.domain.usecases.foods.*
 import com.example.emaveganfood.domain.usecases.navigation.GetStartDestinationUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
@@ -30,38 +29,38 @@ object AppModule {
         CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     @Provides
-    fun provideFoodRepository(): IFoodRepository = FoodRepositoryImpl()
+    fun provideFoodRepository(): FoodRepository = DefaultFoodRepository()
 
     @Provides
-    fun provideUserRepository(): IUserRepository = UserRepositoryImpl()
+    fun provideUserRepository(): UserRepository = DefaultUserRepository()
 
     @Provides
     fun provideNetworkConnectionManager(
         @ApplicationContext context: Context,
         coroutineScope: CoroutineScope
-        ): INetworkConnectionManager =
-        NetworkConnectionManagerImpl(
+        ): NetworkConnectionManager =
+        DefaultNetworkConnectionManager(
             context,
             coroutineScope
         )
 
     @Provides
     fun provideGetStartDestinationUseCase(
-        userRepository: IUserRepository
+        userRepository: UserRepository
     ) = GetStartDestinationUseCase(
         userRepository
     )
 
     @Provides
     fun provideGetAllFoodsUseCase(
-        foodsRepository: IFoodRepository
+        foodsRepository: FoodRepository
     ) = GetAllFoodsUseCase(
         foodsRepository
     )
 
     @Provides
     fun provideGetAllFoodImagesUseCase(
-        foodsRepository: IFoodRepository
+        foodsRepository: FoodRepository
     ) = GetAllFoodImagesUseCase(
         foodsRepository
     )
@@ -80,7 +79,7 @@ object AppModule {
 
     @Provides
     fun provideAddFoodUseCase(
-        foodsRepository: IFoodRepository,
+        foodsRepository: FoodRepository,
         checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
     ) = AddFoodToDatabaseUseCase(
         foodsRepository,
@@ -89,7 +88,7 @@ object AppModule {
 
     @Provides
     fun provideAddFoodImageToStorageUseCase(
-        foodsRepository: IFoodRepository,
+        foodsRepository: FoodRepository,
         checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
     ) = AddFoodImageToStorageUseCase(
         foodsRepository,
