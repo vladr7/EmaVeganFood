@@ -14,7 +14,7 @@ class AddFoodImageToStorageUseCase @Inject constructor(
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
     ) {
 
-    operator fun invoke(food: Food, fileUri: Uri?): Flow<State<StorageReference>> {
+    operator fun invoke(food: Food, fileUri: Uri?): Flow<State<Food>> {
         if(!checkFieldsAreFilledUseCase(food.title, food.description)) {
             return flowOf(State.failed("Te rog adauga titlu si o scurta descriere"))
         }

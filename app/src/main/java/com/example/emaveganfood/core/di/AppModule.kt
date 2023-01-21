@@ -1,6 +1,8 @@
 package com.example.emaveganfood.core.di
 
 import android.content.Context
+import com.example.emaveganfood.data.datasource.FoodDataSource
+import com.example.emaveganfood.data.datasource.implementation.DefaultFoodDataSource
 import com.example.emaveganfood.data.repository.DefaultFoodRepository
 import com.example.emaveganfood.data.repository.DefaultNetworkConnectionManager
 import com.example.emaveganfood.data.repository.DefaultUserRepository
@@ -29,7 +31,14 @@ object AppModule {
         CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     @Provides
-    fun provideFoodRepository(): FoodRepository = DefaultFoodRepository()
+    fun provideFoodDataSource(): FoodDataSource = DefaultFoodDataSource()
+
+    @Provides
+    fun provideFoodRepository(
+        foodDataSource: FoodDataSource
+    ): FoodRepository = DefaultFoodRepository(
+        foodDataSource = foodDataSource
+    )
 
     @Provides
     fun provideUserRepository(): UserRepository = DefaultUserRepository()
@@ -38,7 +47,7 @@ object AppModule {
     fun provideNetworkConnectionManager(
         @ApplicationContext context: Context,
         coroutineScope: CoroutineScope
-        ): NetworkConnectionManager =
+    ): NetworkConnectionManager =
         DefaultNetworkConnectionManager(
             context,
             coroutineScope
@@ -105,9 +114,7 @@ object AppModule {
     )
 
     @Provides
-    fun provideGenerateFoodUseCase(
+    fun provideGenerateFoodUseCase() = GenerateFoodUseCase()
 
-    ) = GenerateFoodUseCase(
 
-    )
 }
