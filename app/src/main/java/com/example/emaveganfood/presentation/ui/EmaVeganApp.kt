@@ -158,7 +158,7 @@ fun BottomBar(navController: NavController, bottomBarState: MutableState<Boolean
         NavigationItem.Account,
         NavigationItem.Foods,
 //        NavigationItem.Favorites,
-//        NavigationItem.Generate
+        NavigationItem.Generate
     )
 
     AnimatedVisibility(
