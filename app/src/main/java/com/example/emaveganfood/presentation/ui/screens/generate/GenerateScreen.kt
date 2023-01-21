@@ -1,4 +1,4 @@
-package com.example.emaveganfood.presentation.ui.screens
+package com.example.emaveganfood.presentation.ui.screens.generate
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
