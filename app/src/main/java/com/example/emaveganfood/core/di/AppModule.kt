@@ -114,7 +114,11 @@ object AppModule {
     )
 
     @Provides
-    fun provideGenerateFoodUseCase() = GenerateFoodUseCase()
+    fun provideGenerateFoodUseCase(
+        getAllFoodsWithImagesCombinedUseCase: GetAllFoodsWithImagesCombinedUseCase
+    ) = GenerateFoodUseCase(
+        getAllFoodsWithImagesCombinedUseCase
+    )
 
 
 }

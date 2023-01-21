@@ -38,12 +38,13 @@ fun GenerateScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FoodItem(food = state.food)
+        FoodItem(food = state.food, isLoading = state.isLoading)
 
         Spacer(modifier = Modifier.padding(16.dp))
 
         Button(
             onClick = {
+                viewModel.showLoading()
                 viewModel.generateFoodEvent()
             },
             modifier = Modifier.padding(16.dp)
@@ -57,7 +58,8 @@ fun GenerateScreen(
 @Composable
 fun FoodItem(
     food: FoodViewData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean
 ) {
     val color by animateColorAsState(
         targetValue = colorResource(id = R.color.light_purple)
@@ -82,25 +84,35 @@ fun FoodItem(
                 )
                 .background(color)
         ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(10.dp)
-                    .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(food.imageRef)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                loading = {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(100.dp)
-                    )
-                }
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(10.dp)
+                )
+            } else {
+                SubcomposeAsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(10.dp)
+                        .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(food.imageRef)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    loading = {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(100.dp)
+                        )
+                    }
+                )
+            }
+
             Text(
                 text = food.title,
                 Modifier.padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
@@ -108,5 +120,6 @@ fun FoodItem(
             )
             FoodDescription(description = food.description)
         }
+
     }
 }
