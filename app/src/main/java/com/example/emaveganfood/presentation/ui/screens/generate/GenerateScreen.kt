@@ -44,7 +44,7 @@ fun GenerateScreen(
 
         Button(
             onClick = {
-                Toast.makeText(context, "Generat", Toast.LENGTH_SHORT).show()
+                viewModel.generateFoodEvent()
             },
             modifier = Modifier.padding(16.dp)
         ) {

@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class GetAllFoodsWithImagesCombinedUseCase @Inject constructor(
     private val getAllFoodsUseCase: GetAllFoodsUseCase,
-    private val getAllFoodImagesUseCase: GetAllFoodImagesUseCase
+    private val getAllFoodImagesUseCase: GetAllFoodImagesUseCase,
 ) {
 
     suspend operator fun invoke() = channelFlow<State<List<Food>>> {

@@ -103,4 +103,11 @@ object AppModule {
         addFoodToDatabaseUseCase,
         addFoodImageToStorageUseCase
     )
+
+    @Provides
+    fun provideGenerateFoodUseCase(
+
+    ) = GenerateFoodUseCase(
+
+    )
 }
