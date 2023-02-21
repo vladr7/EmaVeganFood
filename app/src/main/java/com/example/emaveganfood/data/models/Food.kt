@@ -12,6 +12,6 @@ data class Food(
     @SerialName("id") val id: String = "",
     @SerialName("title") val title: String = "",
     @SerialName("description") val description: String = "",
-    @SerialName("timeInSeconds") val timeInSeconds: Long = Timestamp.now().seconds,
+    @SerialName("timeInSeconds") val addedDateInSeconds: Long = Timestamp.now().seconds,
     val imageRef: String = ""
 ): java.io.Serializable, Model()

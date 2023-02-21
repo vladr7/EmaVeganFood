@@ -94,6 +94,7 @@ dependencies {
     // Image Compressor
     implementation 'id.zelory:compressor:3.0.1'
 
-
-
+    // Room dependency
+    implementation "androidx.room:room-runtime:2.5.0"
+    kapt "androidx.room:room-compiler:2.5.0"
 }
