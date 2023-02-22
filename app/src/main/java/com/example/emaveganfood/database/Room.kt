@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface FoodDao{
 
     @Query("select * from databasefood")
-    fun getFoods(): Flow<DatabaseFood>
+    fun getFoods(): Flow<List<DatabaseFood>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(foods: List<DatabaseFood>)
@@ -21,7 +21,7 @@ abstract class FoodDatabase: RoomDatabase() {
 
 private lateinit var INSTANCE: FoodDatabase
 
-fun getDatabase(context: Context): FoodDatabase {
+fun getFoodDatabase(context: Context): FoodDatabase {
     synchronized(FoodDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(context.applicationContext,

@@ -27,4 +27,25 @@ fun List<DatabaseFood>.asDomainModel(): List<Food> {
     }
 }
 
-fun
+
+fun List<Food>.asDatabaseModel(): List<DatabaseFood> {
+    return this.map {
+        DatabaseFood(
+            id = it.id,
+            title = it.title,
+            description = it.description,
+            addedDateInSeconds = it.addedDateInSeconds,
+            imageRef = it.imageRef
+        )
+    }
+}
+
+fun DatabaseFood.asDomainModel(): Food {
+    return Food(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        addedDateInSeconds = this.addedDateInSeconds,
+        imageRef = this.imageRef
+    )
+}
