@@ -33,7 +33,7 @@ class FoodsViewModel @Inject constructor(
         getFoodsAndImages()
         getNetworkStatus()
         refreshDataFromRepository()
-        viewModelScope.launch {
+        viewModelScope.launch {// todo need to also get images, and probably move this into usecase
             newFoodRepository.foods.collectLatest { newList ->
                 _state.update {
                     it.copy(
