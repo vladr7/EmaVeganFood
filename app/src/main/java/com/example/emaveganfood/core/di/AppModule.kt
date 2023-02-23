@@ -5,10 +5,14 @@ import com.example.emaveganfood.data.datasource.FoodDataSource
 import com.example.emaveganfood.data.datasource.implementation.DefaultFoodDataSource
 import com.example.emaveganfood.data.repository.DefaultFoodRepository
 import com.example.emaveganfood.data.repository.DefaultNetworkConnectionManager
+import com.example.emaveganfood.data.repository.DefaultNewFoodRepository
 import com.example.emaveganfood.data.repository.DefaultUserRepository
+import com.example.emaveganfood.database.FoodDatabase
+import com.example.emaveganfood.database.getFoodDatabase
 import com.example.emaveganfood.domain.repository.FoodRepository
 import com.example.emaveganfood.domain.repository.UserRepository
 import com.example.emaveganfood.domain.repository.NetworkConnectionManager
+import com.example.emaveganfood.domain.repository.NewFoodRepository
 import com.example.emaveganfood.domain.usecases.foods.*
 import com.example.emaveganfood.domain.usecases.navigation.GetStartDestinationUseCase
 import dagger.Module
@@ -120,5 +124,21 @@ object AppModule {
         getAllFoodsWithImagesCombinedUseCase
     )
 
+    @Singleton
+    @Provides
+    fun provideFoodDatabase(
+        @ApplicationContext context: Context
+    ) = getFoodDatabase(context)
+
+
+    @Singleton
+    @Provides
+    fun provideNewFoodRepository(
+        foodDatabase: FoodDatabase,
+        foodDataSource: FoodDataSource
+    ): NewFoodRepository = DefaultNewFoodRepository(
+        database = foodDatabase,
+        foodDataSource = foodDataSource
+    )
 
 }

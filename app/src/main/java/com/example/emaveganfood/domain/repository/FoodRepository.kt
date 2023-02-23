@@ -7,7 +7,7 @@ import com.example.emaveganfood.core.utils.State
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.Flow
 
-interface FoodRepository {
+interface  FoodRepository {
 
     fun addFood(food: Food): Flow<State<Food>>
 
