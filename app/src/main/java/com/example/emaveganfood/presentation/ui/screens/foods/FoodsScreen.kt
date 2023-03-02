@@ -75,16 +75,11 @@ fun FoodsScreen(
         if(state.isNetworkAvailable == false) {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show()
         }
-//        LazyColumn(
-//            state = listState
-//        ) {
-//            items(state.listAllFoods) { food ->
-//                FoodItem(food = food)
-//            }
-//        }
-        LazyColumn(state = listState) {
-            items(state.newFoodList) {food ->
-                NewFoodItem(food = food)
+        LazyColumn(
+            state = listState
+        ) {
+            items(state.listAllFoods) { food ->
+                FoodItem(food = food)
             }
         }
     }
@@ -122,71 +117,6 @@ fun AddFoodFab(
         )
     }
 }
-
-@Composable
-fun NewFoodItem(
-    food: Food,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    val color by animateColorAsState(
-        targetValue = if (expanded) colorResource(id = R.color.light_purple) else MaterialTheme.colors.surface,
-    )
-
-    val itemPadding = if (expanded) 8.dp else 16.dp
-
-    Card(
-        modifier = Modifier
-            .padding(itemPadding)
-            .clickable {
-                expanded = !expanded
-            },
-        elevation = 8.dp, shape = RoundedCornerShape(8.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessMediumLow
-                    )
-                )
-                .background(color)
-        ) {
-            SubcomposeAsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(10.dp)
-                    .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(food.imageRef)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                loading = {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(100.dp)
-                    )
-                }
-            )
-            Text(
-                text = food.title,
-                Modifier.padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
-                style = MaterialTheme.typography.h5,
-            )
-            if (expanded) {
-                FoodDescription(description = food.description)
-            }
-        }
-    }
-}
-
 
 @Composable
 fun FoodItem(

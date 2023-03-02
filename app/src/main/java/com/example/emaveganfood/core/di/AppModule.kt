@@ -65,29 +65,6 @@ object AppModule {
     )
 
     @Provides
-    fun provideGetAllFoodsUseCase(
-        foodsRepository: FoodRepository
-    ) = GetAllFoodsUseCase(
-        foodsRepository
-    )
-
-    @Provides
-    fun provideGetAllFoodImagesUseCase(
-        foodsRepository: FoodRepository
-    ) = GetAllFoodImagesUseCase(
-        foodsRepository
-    )
-
-    @Provides
-    fun provideGetAllFoodsWithImagesCombinedUseCase(
-        getAllFoodsUseCase: GetAllFoodsUseCase,
-        getAllFoodImagesUseCase: GetAllFoodImagesUseCase
-    ) = GetAllFoodsWithImagesCombinedUseCase(
-        getAllFoodsUseCase,
-        getAllFoodImagesUseCase
-    )
-
-    @Provides
     fun provideCheckFieldsAreFilledUseCase() = CheckFieldsAreFilledUseCase()
 
     @Provides
@@ -119,9 +96,9 @@ object AppModule {
 
     @Provides
     fun provideGenerateFoodUseCase(
-        getAllFoodsWithImagesCombinedUseCase: GetAllFoodsWithImagesCombinedUseCase
+        getAllFoodsUseCase: GetAllFoodsUseCase
     ) = GenerateFoodUseCase(
-        getAllFoodsWithImagesCombinedUseCase
+        getAllFoodsUseCase
     )
 
     @Singleton

@@ -8,21 +8,11 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 class GenerateFoodUseCase @Inject constructor(
-    private val getAllFoodsWithImagesCombinedUseCase: GetAllFoodsWithImagesCombinedUseCase
+    private val getAllFoodsUseCase: GetAllFoodsUseCase
 ) {
-    suspend operator fun invoke(): Flow<State<Food>> =
-        getAllFoodsWithImagesCombinedUseCase().map { listState ->
-            when(listState) {
-                is State.Failed -> {
-                    State.failed<Food>(message = listState.message)
-                }
-                is State.Loading -> {
-                    State.loading<Food>()
-                }
-                is State.Success -> {
-                    val randomIndex = Random.nextInt(from = 0, until = listState.data.size)
-                    State.success(data = listState.data[randomIndex])
-                }
-            }
+    operator fun invoke(): Flow<Food> =
+        getAllFoodsUseCase().map { foods ->
+            val randomIndex = Random.nextInt(from = 0, until = foods.size)
+            foods[randomIndex]
         }
 }

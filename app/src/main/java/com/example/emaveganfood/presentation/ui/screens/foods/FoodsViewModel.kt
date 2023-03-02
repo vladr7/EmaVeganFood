@@ -1,7 +1,6 @@
 package com.example.emaveganfood.presentation.ui.screens.foods
 
 import androidx.lifecycle.viewModelScope
-import com.example.emaveganfood.domain.usecases.foods.GetAllFoodsWithImagesCombinedUseCase
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.domain.repository.NetworkConnectionManager
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FoodsViewModel @Inject constructor(
-    private val getAllFoodsWithImagesCombinedUseCase: GetAllFoodsWithImagesCombinedUseCase,
     private val foodMapper: FoodMapper,
     private val networkConnectionManager: NetworkConnectionManager,
     private val newFoodRepository: NewFoodRepository
@@ -27,18 +25,19 @@ class FoodsViewModel @Inject constructor(
     val state: StateFlow<FoodsViewState> = _state
 
     init {
-//        getFoodsAndImages()
         getNetworkStatus()
         refreshDataFromRepository()
         getFoodsAndImagesNew()
     }
 
     private fun getFoodsAndImagesNew() {
-        viewModelScope.launch {// todo need to also get images, and probably move this into usecase
+        viewModelScope.launch {
             newFoodRepository.foods.collectLatest { newList ->
                 _state.update {
                     it.copy(
-                        newFoodList = newList
+                        listAllFoods = newList.map { food ->
+                            foodMapper.mapToViewData(food)
+                        }
                     )
                 }
             }
@@ -48,32 +47,6 @@ class FoodsViewModel @Inject constructor(
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             newFoodRepository.refreshFoods()
-        }
-    }
-
-    private fun getFoodsAndImages() {
-        viewModelScope.launch {
-            getAllFoodsWithImagesCombinedUseCase().collectLatest { state ->
-                when (state) {
-                    is State.Failed -> {
-                        showError(errorMessage = state.message)
-                    }
-                    is State.Loading -> {
-                        showLoading()
-                    }
-                    is State.Success -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = null,
-                                listAllFoods = state.data.map { food ->
-                                    foodMapper.mapToViewData(food)
-                                }
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -120,5 +93,4 @@ data class FoodsViewState(
     override val errorMessage: String? = null,
     val listAllFoods: List<FoodViewData> = emptyList(),
     val isNetworkAvailable: Boolean? = null,
-    val newFoodList: List<Food> = emptyList()
 ) : ViewState(isLoading, errorMessage)

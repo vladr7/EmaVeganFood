@@ -26,23 +26,13 @@ class GenerateViewModel @Inject constructor(
 
     fun generateFoodEvent() {
         viewModelScope.launch {
-            generateFoodUseCase().collectLatest { foodState ->
-                when(foodState) {
-                    is State.Failed -> {
-                        hideLoading()
-                        showError(errorMessage = foodState.message)
-                    }
-                    is State.Loading -> {
-                        showLoading()
-                    }
-                    is State.Success -> {
-                        hideLoading()
-                        _state.update {
-                            it.copy(
-                                food = foodMapper.mapToViewData(foodState.data)
-                            )
-                        }
-                    }
+            showLoading()
+            generateFoodUseCase().collectLatest { food ->
+                hideLoading()
+                _state.update {
+                    it.copy(
+                        food = foodMapper.mapToViewData(food)
+                    )
                 }
             }
         }
