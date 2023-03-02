@@ -13,7 +13,7 @@ interface FoodDataSource {
 
     fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<StorageReference>>
 
-    fun getAllFoods(): Flow<State<List<Food>>>
+    fun getAllFoods(): Flow<List<Food>>
 
     fun getAllFoodImages(): Flow<List<FoodImage>>
 }

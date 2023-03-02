@@ -51,21 +51,20 @@ class DefaultFoodDataSource: FoodDataSource {
         emit(State.failed(it.message.toString()))
     }.flowOn(Dispatchers.IO)
 
-    override fun getAllFoods() = callbackFlow<State<List<Food>>>{
-        trySend(State.loading())
+    override fun getAllFoods() = callbackFlow<List<Food>>{
         val snapshotListener = foodCollection.addSnapshotListener { snapshot, error ->
             if(snapshot != null) {
                 val foods = snapshot.toObjects(Food::class.java)
-                trySend(State.success(foods))
+                trySend(foods)
             } else {
-                trySend(State.failed(error?.message ?: ""))
+                trySend(emptyList())
             }
         }
         awaitClose {
             snapshotListener.remove()
         }
     }.catch {
-        emit(State.failed("failed to get foods"))
+        emit(emptyList())
     }.flowOn(Dispatchers.IO)
 
 

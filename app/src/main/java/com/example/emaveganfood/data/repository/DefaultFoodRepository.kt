@@ -41,8 +41,12 @@ class DefaultFoodRepository @Inject constructor(
             }
         }
 
-    override fun getAllFoods(): Flow<State<List<Food>>>  =
-        foodDataSource.getAllFoods()
+    override fun getAllFoods(): Flow<State<List<Food>>> {
+        TODO("Not yet implemented")
+    }
+
+//    override fun getAllFoods(): Flow<State<List<Food>>>  =
+////        foodDataSource.getAllFoods()
 
     override fun getAllFoodImages(): Flow<List<FoodImage>> =
         foodDataSource.getAllFoodImages()

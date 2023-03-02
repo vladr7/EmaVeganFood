@@ -11,10 +11,7 @@ import com.example.emaveganfood.presentation.base.ViewState
 import com.example.emaveganfood.presentation.models.FoodMapper
 import com.example.emaveganfood.presentation.models.FoodViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,9 +27,13 @@ class FoodsViewModel @Inject constructor(
     val state: StateFlow<FoodsViewState> = _state
 
     init {
-        getFoodsAndImages()
+//        getFoodsAndImages()
         getNetworkStatus()
         refreshDataFromRepository()
+        getFoodsAndImagesNew()
+    }
+
+    private fun getFoodsAndImagesNew() {
         viewModelScope.launch {// todo need to also get images, and probably move this into usecase
             newFoodRepository.foods.collectLatest { newList ->
                 _state.update {
@@ -79,7 +80,7 @@ class FoodsViewModel @Inject constructor(
     private fun getNetworkStatus() {
         networkConnectionManager.startListenNetworkState()
         viewModelScope.launch {
-            networkConnectionManager.isNetworkConnectedFlow.collectLatest { networkStatus ->
+            networkConnectionManager.isNetworkConnectedFlow.debounce(2000L).collectLatest { networkStatus ->
                 _state.update {
                     it.copy(
                         isNetworkAvailable = networkStatus
