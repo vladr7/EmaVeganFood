@@ -1,5 +1,6 @@
 package com.example.emaveganfood.domain.repository
 
+import android.net.Uri
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.database.asDatabaseModel
@@ -15,4 +16,8 @@ interface NewFoodRepository {
     val foods: Flow<List<Food>>
 
     suspend fun refreshFoods()
+
+    fun addFood(food: Food): Flow<State<Food>>
+
+    fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<Food>>
 }

@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface FoodDataSource {
 
-    fun addFood(food: Food): Flow<State<Food>>
+    suspend fun addFood(food: Food): State<Food>
 
-    fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<StorageReference>>
+    suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
 
     fun getAllFoods(): Flow<List<Food>>
 

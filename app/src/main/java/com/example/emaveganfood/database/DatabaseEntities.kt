@@ -1,5 +1,6 @@
 package com.example.emaveganfood.database
 
+import android.provider.ContactsContract.Data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.emaveganfood.data.models.Food
@@ -27,6 +28,15 @@ fun List<DatabaseFood>.asDomainModel(): List<Food> {
     }
 }
 
+fun DatabaseFood.asDomainModel(): Food {
+    return Food(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        addedDateInSeconds = this.addedDateInSeconds,
+        imageRef = this.imageRef
+    )
+}
 
 fun List<Food>.asDatabaseModel(): List<DatabaseFood> {
     return this.map {
@@ -40,12 +50,14 @@ fun List<Food>.asDatabaseModel(): List<DatabaseFood> {
     }
 }
 
-fun DatabaseFood.asDomainModel(): Food {
-    return Food(
+fun Food.asDatabaseModel() : DatabaseFood {
+    return DatabaseFood(
         id = this.id,
         title = this.title,
         description = this.description,
         addedDateInSeconds = this.addedDateInSeconds,
         imageRef = this.imageRef
+
     )
 }
+

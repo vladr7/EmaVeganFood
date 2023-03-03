@@ -7,7 +7,6 @@ import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.data.models.FoodImage
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -29,27 +28,28 @@ class DefaultFoodDataSource: FoodDataSource {
     private val storage = FirebaseStorage.getInstance()
     private val gsReference = storage.getReferenceFromUrl("gs://emaveganapp.appspot.com/$STORAGE_FOODS/")
 
-    override fun addFood(food: Food) = flow<State<Food>> {
-        emit(State.loading())
+    override suspend fun addFood(food: Food): State<Food> {
+        val task = foodCollection.document(food.id).set(food)
+        task.await()
+        return if(task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not add food to firebase")
+        }
+    }
 
-        foodCollection.document(food.id).set(food)
-
-        emit(State.success(food))
-    }.catch {
-        emit(State.failed(it.message.toString()))
-    }.flowOn(Dispatchers.IO)
-
-    override fun addFoodImageToStorage(food: Food, fileUri: Uri) = flow<State<StorageReference>> {
-        emit(State.loading())
-
+    override suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food> {
         val extension = ".jpg"
-        val refStorage = FirebaseStorage.getInstance().reference.child("$STORAGE_FOODS/${food.id}$extension")
-        refStorage.putFile(fileUri).await()
-
-        emit(State.success(refStorage))
-    }.catch {
-        emit(State.failed(it.message.toString()))
-    }.flowOn(Dispatchers.IO)
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_FOODS/${food.id}$extension")
+        val task = refStorage.putFile(fileUri)
+        task.await()
+        return if (task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not add food image to storage")
+        }
+    }
 
     override fun getAllFoods() = callbackFlow<List<Food>>{
         val snapshotListener = foodCollection.addSnapshotListener { snapshot, error ->

@@ -1,5 +1,6 @@
 package com.example.emaveganfood.data.repository
 
+import android.net.Uri
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.data.datasource.FoodDataSource
 import com.example.emaveganfood.data.models.Food
@@ -50,4 +51,10 @@ class DefaultNewFoodRepository @Inject constructor(
                 }.collect()
         }
     }
+
+    override fun addFood(food: Food): Flow<State<Food>> =
+        foodDataSource.addFood(food = food)
+
+    override fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<Food>> =
+        foodDataSource.addFoodImageToStorage(food = food, fileUri = fileUri)
 }
