@@ -52,9 +52,9 @@ class DefaultNewFoodRepository @Inject constructor(
         }
     }
 
-    override fun addFood(food: Food): Flow<State<Food>> =
+    override suspend fun addFood(food: Food): State<Food> =
         foodDataSource.addFood(food = food)
 
-    override fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<Food>> =
+    override suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food> =
         foodDataSource.addFoodImageToStorage(food = food, fileUri = fileUri)
 }

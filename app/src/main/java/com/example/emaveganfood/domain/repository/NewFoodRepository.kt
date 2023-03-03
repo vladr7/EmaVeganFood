@@ -17,7 +17,7 @@ interface NewFoodRepository {
 
     suspend fun refreshFoods()
 
-    fun addFood(food: Food): Flow<State<Food>>
+    suspend fun addFood(food: Food): State<Food>
 
-    fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<Food>>
+    suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
 }
