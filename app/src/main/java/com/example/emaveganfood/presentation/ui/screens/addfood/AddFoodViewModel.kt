@@ -4,7 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.core.utils.State
-import com.example.emaveganfood.domain.usecases.foods.AddFoodCombinedUseCase
+import com.example.emaveganfood.domain.repository.FoodRepository
+import com.example.emaveganfood.domain.usecases.foods.AddFoodUseCase
 import com.example.emaveganfood.presentation.base.BaseViewModel
 import com.example.emaveganfood.presentation.base.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,8 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddFoodViewModel @Inject constructor(
-    private val addFoodCombinedUseCase: AddFoodCombinedUseCase
-): BaseViewModel() {
+    private val addFoodUseCase: AddFoodUseCase,
+    private val foodRepository: FoodRepository
+) : BaseViewModel() {
 
     private val _state = MutableStateFlow<AddFoodViewState>(AddFoodViewState())
     val state: StateFlow<AddFoodViewState> = _state
@@ -29,7 +31,10 @@ class AddFoodViewModel @Inject constructor(
 
     fun updateFoodDescription(description: String) {
         _state.update {
-            it.copy(foodDescription = description, foodItem = it.foodItem.copy(description = description))
+            it.copy(
+                foodDescription = description,
+                foodItem = it.foodItem.copy(description = description)
+            )
         }
     }
 
@@ -47,21 +52,24 @@ class AddFoodViewModel @Inject constructor(
 
     fun addFoodAndImage() {
         viewModelScope.launch {
-            addFoodCombinedUseCase(state.value.foodItem, state.value.imageUri).collectLatest { state ->
-                when(state) {
-                    is State.Failed -> {
-                        showError(errorMessage = state.message)
-                    }
-                    is State.Loading -> {
-                        showLoading()
-                    }
-                    is State.Success -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = null,
-                            )
-                        }
+            showLoading()
+            when (val state = addFoodUseCase.execute(
+                food = state.value.foodItem,
+                imageUri = state.value.imageUri
+            )) {
+                is State.Failed -> {
+                    showError(errorMessage = state.message)
+                }
+                is State.Loading -> {
+                    showLoading()
+                }
+                is State.Success -> {
+                    refreshDataFromRepository()
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = null,
+                        )
                     }
                 }
             }
@@ -92,6 +100,11 @@ class AddFoodViewModel @Inject constructor(
         }
     }
 
+    private fun refreshDataFromRepository() {
+        viewModelScope.launch {
+            foodRepository.refreshFoods()
+        }
+    }
 }
 
 data class AddFoodViewState(

@@ -1,10 +1,8 @@
 package com.example.emaveganfood.presentation.ui.screens.foods
 
 import androidx.lifecycle.viewModelScope
-import com.example.emaveganfood.core.utils.State
-import com.example.emaveganfood.data.models.Food
 import com.example.emaveganfood.domain.repository.NetworkConnectionManager
-import com.example.emaveganfood.domain.repository.NewFoodRepository
+import com.example.emaveganfood.domain.repository.FoodRepository
 import com.example.emaveganfood.presentation.base.BaseViewModel
 import com.example.emaveganfood.presentation.base.ViewState
 import com.example.emaveganfood.presentation.models.FoodMapper
@@ -18,7 +16,7 @@ import javax.inject.Inject
 class FoodsViewModel @Inject constructor(
     private val foodMapper: FoodMapper,
     private val networkConnectionManager: NetworkConnectionManager,
-    private val newFoodRepository: NewFoodRepository
+    private val foodRepository: FoodRepository
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<FoodsViewState>(FoodsViewState())
@@ -32,7 +30,7 @@ class FoodsViewModel @Inject constructor(
 
     private fun getFoodsAndImagesNew() {
         viewModelScope.launch {
-            newFoodRepository.foods.collectLatest { newList ->
+            foodRepository.foods.collectLatest { newList ->
                 _state.update {
                     it.copy(
                         listAllFoods = newList.map { food ->
@@ -46,7 +44,7 @@ class FoodsViewModel @Inject constructor(
 
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
-            newFoodRepository.refreshFoods()
+            foodRepository.refreshFoods()
         }
     }
 

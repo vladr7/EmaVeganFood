@@ -3,16 +3,14 @@ package com.example.emaveganfood.core.di
 import android.content.Context
 import com.example.emaveganfood.data.datasource.FoodDataSource
 import com.example.emaveganfood.data.datasource.implementation.DefaultFoodDataSource
-import com.example.emaveganfood.data.repository.DefaultFoodRepository
 import com.example.emaveganfood.data.repository.DefaultNetworkConnectionManager
-import com.example.emaveganfood.data.repository.DefaultNewFoodRepository
+import com.example.emaveganfood.data.repository.DefaultFoodRepository
 import com.example.emaveganfood.data.repository.DefaultUserRepository
 import com.example.emaveganfood.database.FoodDatabase
 import com.example.emaveganfood.database.getFoodDatabase
-import com.example.emaveganfood.domain.repository.FoodRepository
 import com.example.emaveganfood.domain.repository.UserRepository
 import com.example.emaveganfood.domain.repository.NetworkConnectionManager
-import com.example.emaveganfood.domain.repository.NewFoodRepository
+import com.example.emaveganfood.domain.repository.FoodRepository
 import com.example.emaveganfood.domain.usecases.foods.*
 import com.example.emaveganfood.domain.usecases.navigation.GetStartDestinationUseCase
 import dagger.Module
@@ -39,8 +37,10 @@ object AppModule {
 
     @Provides
     fun provideFoodRepository(
+        foodDatabase: FoodDatabase,
         foodDataSource: FoodDataSource
     ): FoodRepository = DefaultFoodRepository(
+        foodDatabase,
         foodDataSource = foodDataSource
     )
 
@@ -68,30 +68,12 @@ object AppModule {
     fun provideCheckFieldsAreFilledUseCase() = CheckFieldsAreFilledUseCase()
 
     @Provides
-    fun provideAddFoodUseCase(
-        foodsRepository: FoodRepository,
-        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
-    ) = AddFoodToDatabaseUseCase(
-        foodsRepository,
-        checkFieldsAreFilledUseCase
-    )
-
-    @Provides
-    fun provideAddFoodImageToStorageUseCase(
-        foodsRepository: FoodRepository,
-        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
-    ) = AddFoodImageToStorageUseCase(
-        foodsRepository,
-        checkFieldsAreFilledUseCase
-    )
-
-    @Provides
     fun provideAddFoodToFirebaseCombinedUseCase(
-        addFoodToDatabaseUseCase: AddFoodToDatabaseUseCase,
-        addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase
-    ) = AddFoodCombinedUseCase(
-        addFoodToDatabaseUseCase,
-        addFoodImageToStorageUseCase
+        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
+        foodRepository: FoodRepository
+    ) = AddFoodUseCase(
+        checkFieldsAreFilledUseCase,
+        foodRepository
     )
 
     @Provides
@@ -106,16 +88,5 @@ object AppModule {
     fun provideFoodDatabase(
         @ApplicationContext context: Context
     ) = getFoodDatabase(context)
-
-
-    @Singleton
-    @Provides
-    fun provideNewFoodRepository(
-        foodDatabase: FoodDatabase,
-        foodDataSource: FoodDataSource
-    ): NewFoodRepository = DefaultNewFoodRepository(
-        database = foodDatabase,
-        foodDataSource = foodDataSource
-    )
 
 }

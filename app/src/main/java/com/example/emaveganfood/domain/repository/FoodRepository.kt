@@ -1,19 +1,17 @@
 package com.example.emaveganfood.domain.repository
 
 import android.net.Uri
-import com.example.emaveganfood.data.models.Food
-import com.example.emaveganfood.data.models.FoodImage
 import com.example.emaveganfood.core.utils.State
-import com.google.firebase.storage.StorageReference
+import com.example.emaveganfood.data.models.Food
 import kotlinx.coroutines.flow.Flow
 
-interface  FoodRepository {
+interface FoodRepository {
 
-    fun addFood(food: Food): Flow<State<Food>>
+    val foods: Flow<List<Food>>
 
-    fun addFoodImageToStorage(food: Food, fileUri: Uri): Flow<State<Food>>
+    suspend fun refreshFoods()
 
-    fun getAllFoods(): Flow<State<List<Food>>>
+    suspend fun addFood(food: Food): State<Food>
 
-    fun getAllFoodImages(): Flow<List<FoodImage>>
+    suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
 }
