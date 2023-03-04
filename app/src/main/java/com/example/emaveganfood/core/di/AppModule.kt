@@ -6,8 +6,8 @@ import com.example.emaveganfood.data.datasource.implementation.DefaultFoodDataSo
 import com.example.emaveganfood.data.repository.DefaultNetworkConnectionManager
 import com.example.emaveganfood.data.repository.DefaultFoodRepository
 import com.example.emaveganfood.data.repository.DefaultUserRepository
-import com.example.emaveganfood.database.FoodDatabase
-import com.example.emaveganfood.database.getFoodDatabase
+import com.example.emaveganfood.data.database.FoodDatabase
+import com.example.emaveganfood.data.database.getFoodDatabase
 import com.example.emaveganfood.domain.repository.UserRepository
 import com.example.emaveganfood.domain.repository.NetworkConnectionManager
 import com.example.emaveganfood.domain.repository.FoodRepository

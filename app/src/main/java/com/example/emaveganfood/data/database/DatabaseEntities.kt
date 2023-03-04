@@ -1,4 +1,4 @@
-package com.example.emaveganfood.database
+package com.example.emaveganfood.data.database
 
 import android.provider.ContactsContract.Data
 import androidx.room.Entity

@@ -4,9 +4,9 @@ import android.net.Uri
 import com.example.emaveganfood.core.utils.State
 import com.example.emaveganfood.data.datasource.FoodDataSource
 import com.example.emaveganfood.data.models.Food
-import com.example.emaveganfood.database.FoodDatabase
-import com.example.emaveganfood.database.asDatabaseModel
-import com.example.emaveganfood.database.asDomainModel
+import com.example.emaveganfood.data.database.FoodDatabase
+import com.example.emaveganfood.data.database.asDatabaseModel
+import com.example.emaveganfood.data.database.asDomainModel
 import com.example.emaveganfood.domain.repository.FoodRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
